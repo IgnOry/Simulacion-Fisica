@@ -7,6 +7,7 @@
 #include "core.hpp"
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
+#include "Particle.h"
 
 using namespace physx;
 
@@ -25,8 +26,7 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
-PxShape* shape;
-RenderItem* item;
+Particle* particula;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -54,11 +54,7 @@ void initPhysics(bool interactive)
 	// ------------------------------------------------------
 
 	
-	PxGeometry sphere = PxSphereGeometry();
-	shape = CreateShape(sphere);
-	PxTransform* transform = new PxTransform(0, 0, 0);
-	item = new RenderItem(shape, transform , Vector4(1, 1, 1, 1));
-	//RegisterRenderItem(item);
+	particula = new Particle(1.0f);
 
 }
 
