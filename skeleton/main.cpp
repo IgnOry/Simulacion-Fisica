@@ -56,6 +56,7 @@ void initPhysics(bool interactive)
 	
 	particula = new Particle(1.0f);
 
+
 }
 
 
@@ -65,6 +66,7 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
+	particula->integrate(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);

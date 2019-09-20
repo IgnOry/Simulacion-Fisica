@@ -1,7 +1,25 @@
 #include "Particle.h"
 
-Particle::Particle(float radius, Vector4 c, Vector3 position)
+Particle::Particle(float r, Vector4 c, Vector3 pos)
 {
-	PxTransform* t = new PxTransform(position);
-	rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), t, c);
+	position = pos;
+	transform = new PxTransform(position);
+	radius = r;
+	color = c;
+	rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
+}
+
+void Particle::integrate(float t)
+{
+	// Trivial case, infinite mass --> do nothing
+	if (inverseMass <= 0.0f) return;
+
+	// Update position
+	position += velocity * t;
+	*transform = PxTransform(position);
+
+	//Update linear velocity
+	velocity += acceleration * t;
+	//Impose drag (damping)
+	velocity *= powf(damping, t);
 }
