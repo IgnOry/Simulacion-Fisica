@@ -27,6 +27,7 @@ PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
 Particle* particula;
+std::vector<Particle*> vec;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -54,8 +55,8 @@ void initPhysics(bool interactive)
 	// ------------------------------------------------------
 
 	
-	particula = new Particle(1.0f);
-
+	//particula = new Particle(1.0f);
+	//particula->setDirVel();
 
 }
 
@@ -66,7 +67,11 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
-	particula->integrate(t);
+	
+	//particula->integrate(t);
+	
+	for (Particle* p : vec)
+		p->integrate(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -101,6 +106,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case ' ':
 	{
+		Particle* p = new Particle(1, Vector4(0.0,1.0,0.0,1.0), GetCamera()->getTransform().p);
+		p->setDirVel(Vector3(0.0,0.0,0.0), GetCamera()->getDir());
+		vec.push_back(p);
 		break;
 	}
 	default:

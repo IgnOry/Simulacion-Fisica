@@ -9,6 +9,12 @@ Particle::Particle(float r, Vector4 c, Vector3 pos)
 	rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
 }
 
+void Particle::setDirVel(Vector3 acc, Vector3 vel)
+{
+	acceleration = acc;
+	velocity = vel;
+}
+
 void Particle::integrate(float t)
 {
 	// Trivial case, infinite mass --> do nothing
@@ -20,6 +26,7 @@ void Particle::integrate(float t)
 
 	//Update linear velocity
 	velocity += acceleration * t;
+
 	//Impose drag (damping)
 	velocity *= powf(damping, t);
 }
