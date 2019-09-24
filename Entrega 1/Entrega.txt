@@ -1,0 +1,17 @@
+Práctica Partículas - Ignacio Ory Alonso
+
+Práctica 1
+
+Se utiliza una clase Partícula independiente, que admite parámetros para poder cambiar el aspecto de la partícula, además de su posición.
+
+Práctica 2
+
+Se añaden más parámetros para controlar el avance de la partícula.
+
+Práctica 3
+
+"Hecha" en la segunda parte, haciendo uso de la fórmula vista en clase
+
+Práctica 4
+
+Se utiliza la tecla espacio para el lanzamiento de los proyectiles. Se añade gestión de memoria, con un vector, que al almacenar 10 proyectiles, destruye los más antiguos al disparar más.
