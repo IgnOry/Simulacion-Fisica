@@ -9,6 +9,7 @@ class Particle
 {
 public:
 	Particle(float radius, Vector4 c = Vector4(0.5, 0.5, 0.5, 1), Vector3 pos = Vector3(0.0f, 0.0f, 0.0f));
+	~Particle();
 	void setDirVel(Vector3 acc = Vector3(1.0, 0, 0), Vector3 vel = Vector3(1.0, 0, 0));
 	void integrate(float t);
 

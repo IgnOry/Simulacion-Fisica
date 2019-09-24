@@ -9,6 +9,12 @@ Particle::Particle(float r, Vector4 c, Vector3 pos)
 	rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
 }
 
+Particle::~Particle()
+{
+	delete transform;
+	rItem->release();
+}
+
 void Particle::setDirVel(Vector3 acc, Vector3 vel)
 {
 	acceleration = acc;

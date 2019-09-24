@@ -106,6 +106,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case ' ':
 	{
+		if (vec.size() == 10)
+		{
+			Particle* aux = *vec.begin();
+			vec.erase(vec.begin());
+
+			delete aux;
+		}
 		Particle* p = new Particle(1, Vector4(0.0,1.0,0.0,1.0), GetCamera()->getTransform().p);
 		p->setDirVel(Vector3(0.0,0.0,0.0), GetCamera()->getDir());
 		vec.push_back(p);
