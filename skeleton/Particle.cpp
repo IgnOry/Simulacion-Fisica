@@ -1,12 +1,13 @@
 #include "Particle.h"
 
-Particle::Particle(float r, Vector4 c, Vector3 pos)
+Particle::Particle(float r, Vector4 c, Vector3 pos, float time)
 {
 	position = pos;
 	transform = new PxTransform(position);
 	radius = r;
 	color = c;
 	rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
+	lifeTime = time;
 }
 
 Particle::~Particle()
@@ -42,24 +43,29 @@ void Particle::setLifeTime(float time_)
 	lifeTime = time_;
 }
 
-void Particle::setVelocity(Vector3 velocity_)
+void Particle::update(float t) //devuelve true si debe morir
 {
-	velocity = velocity_;
+	integrate(t);
+}
+
+bool Particle::deathTime(float t)
+{
+	lifeTime -= t;
+	
+	if (lifeTime < 0)
+		return true;
+	else
+		return false;
 }
 
 void Particle::setMass(float mass_)
 {
-	inverseMass = -mass_;
+	inverseMass = 1.0/mass_;
 }
 
 void Particle::setDamping(float damping_)
 {
 	damping = damping_;
-}
-
-void Particle::setAcceleration(Vector3 acceleration_)
-{
-	acceleration = acceleration_;
 }
 
 Vector3 Particle::getPosition()

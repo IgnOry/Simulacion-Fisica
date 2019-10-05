@@ -8,6 +8,7 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 #include "Particle.h"
+#include "ParticleGenerator.h"
 
 using namespace physx;
 
@@ -27,6 +28,8 @@ PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
 Particle* particula;
+ParticleGenerator* generador;
+
 std::vector<Particle*> vec;
 
 // Initialize physics engine
@@ -43,6 +46,8 @@ void initPhysics(bool interactive)
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+
+	generador = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f);
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -71,7 +76,9 @@ void stepPhysics(bool interactive, double t)
 	//particula->integrate(t);
 	
 	for (Particle* p : vec)
-		p->integrate(t);
+		p->update(t);
+
+	generador->update(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -110,7 +117,6 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		{
 			Particle* aux = *vec.begin();
 			vec.erase(vec.begin());
-
 			delete aux;
 		}
 		Particle* p = new Particle(1, Vector4(0.0,1.0,0.0,1.0), GetCamera()->getTransform().p);

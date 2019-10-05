@@ -8,19 +8,21 @@ using namespace physx;
 class Particle
 {
 public:
-	Particle(float radius, Vector4 c = Vector4(0.5, 0.5, 0.5, 1), Vector3 pos = Vector3(0.0f, 0.0f, 0.0f));
+	Particle(float radius = 1.0f, Vector4 c = Vector4(0.5, 0.5, 0.5, 1), Vector3 pos = Vector3(0.0f, 0.0f, 0.0f), float time = 1.0f);
 	~Particle();
-	void setDirVel(Vector3 acc = Vector3(1.0, 0, 0), Vector3 vel = Vector3(1.0, 0, 0));
 	void integrate(float t);
-	void setLifeTime(float time_);
-
-	virtual void setVelocity(Vector3 velocity_);
+	void update(float t);
+	bool deathTime(float t);
+	//Setters
+	void setPosition(Vector3 position_);
 	virtual void setMass(float mass_);
 	virtual void setDamping(float damping_);
-	virtual void setAcceleration(Vector3 acceleration_);
+	void setLifeTime(float time_);
+	void setDirVel(Vector3 acc = Vector3(1.0, 0, 0), Vector3 vel = Vector3(1.0, 0, 0));
+
+	//Getters
 	virtual Vector3 getPosition();
 	virtual Vector3 getVelocity();
-	void setPosition(Vector3 position_);
 
 protected:
 	float damping = 1.0f;
