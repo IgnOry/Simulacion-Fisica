@@ -1,6 +1,6 @@
 #include "Particle.h"
 
-Particle::Particle(float r, Vector4 c, Vector3 pos, float time)
+Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int repeat_)
 {
 	position = pos;
 	transform = new PxTransform(position);
@@ -8,6 +8,8 @@ Particle::Particle(float r, Vector4 c, Vector3 pos, float time)
 	color = c;
 	rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
 	lifeTime = time;
+	count = count_;
+	repeat = repeat_;
 }
 
 Particle::~Particle()
@@ -20,6 +22,11 @@ void Particle::setDirVel(Vector3 acc, Vector3 vel)
 {
 	acceleration = acc;
 	velocity = vel;
+}
+
+void Particle::setRepeat(int repeat_)
+{
+	repeat = repeat_;
 }
 
 void Particle::integrate(float t)
@@ -68,14 +75,24 @@ void Particle::setDamping(float damping_)
 	damping = damping_;
 }
 
-Vector3 Particle::getPosition()
+Vector3 Particle::getPosition() const
 {
 	return position;
 }
 
-Vector3 Particle::getVelocity()
+Vector3 Particle::getVelocity() const
 {
 	return velocity;
+}
+
+int Particle::getCount()
+{
+	return count;
+}
+
+int Particle::getRepeat()
+{
+	return repeat;
 }
 
 void Particle::setPosition(Vector3 position_)

@@ -9,6 +9,8 @@
 #include "callbacks.hpp"
 #include "Particle.h"
 #include "ParticleGenerator.h"
+#include "Firework.h"
+#include <iostream>
 
 using namespace physx;
 
@@ -27,10 +29,13 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
-Particle* particula;
-ParticleGenerator* generador;
+std::vector<ParticleGenerator*> generatorsVec;
 
-std::vector<Particle*> vec;
+std::vector<Particle*> particlesVec;
+std::vector<Firework*> fireworksVec;
+
+int fireworkModes = 1;
+int count = 3;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -46,8 +51,6 @@ void initPhysics(bool interactive)
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
-	generador = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f);
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -72,14 +75,52 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
-	
-	//particula->integrate(t);
-	
-	for (Particle* p : vec)
+		
+	auto auxP = particlesVec.begin();
+
+	while (!particlesVec.empty() && auxP != particlesVec.end()) {
+		Particle* p = (*auxP);
+
 		p->update(t);
 
-	generador->update(t);
+		if (p->deathTime(t)) {
+			particlesVec.erase(particlesVec.begin());
+			delete p;
+			auxP = particlesVec.begin();
+		}
 
+		else if (!particlesVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+			auxP++;
+	}
+
+	auto auxG = generatorsVec.begin();
+	while (!generatorsVec.empty() && auxG != generatorsVec.end()) {
+		ParticleGenerator* p = (*auxG);
+		p->update(t);
+
+		if (p->deathTime(t)) {
+			generatorsVec.erase(generatorsVec.begin());
+			delete p;
+			auxG = generatorsVec.begin();
+		}
+		
+		else if (!generatorsVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+			auxG++;
+	}
+
+	auto auxF = fireworksVec.begin();
+	while (!fireworksVec.empty() && auxF != fireworksVec.end()) {
+		Firework* f = (*auxF);
+
+		if (f != nullptr && f->update(t)) {
+			fireworksVec.erase(fireworksVec.begin());
+			delete f;
+			auxF = fireworksVec.begin();
+		}
+
+		else if (!fireworksVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+			auxF++;
+	}
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
@@ -106,24 +147,68 @@ void cleanupPhysics(bool interactive)
 void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
+	std::string text = "";
 
 	switch(toupper(key))
 	{
 	//case 'B': break;
 	//case ' ':	break;
-	case ' ':
+	case 'F':
 	{
-		if (vec.size() == 10)
+		Firework* f = new Firework(0.05f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), 0, fireworkModes, count);
+		fireworksVec.push_back(f);
+	}
+	break;
+	case 'G':
 		{
-			Particle* aux = *vec.begin();
-			vec.erase(vec.begin());
+		ParticleGenerator* gen = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f, 5.0f);
+		generatorsVec.push_back(gen); 
+		}
+		break;
+	case 'P':
+		{
+		if (particlesVec.size() == 10)
+		{
+			Particle* aux = *particlesVec.begin();
+			particlesVec.erase(particlesVec.begin());
 			delete aux;
 		}
-		Particle* p = new Particle(1, Vector4(0.0,1.0,0.0,1.0), GetCamera()->getTransform().p);
-		p->setDirVel(Vector3(0.0,0.0,0.0), GetCamera()->getDir());
-		vec.push_back(p);
+		Particle* p = new Particle(1, Vector4(0.0, 1.0, 0.0, 1.0), GetCamera()->getTransform().p, 5.0f);
+		p->setDirVel(Vector3(0.0, 0.0, 0.0), GetCamera()->getDir());
+		particlesVec.push_back(p);
+		}
 		break;
+	case 'M':
+		{
+		if (fireworkModes < 3)
+			fireworkModes++;
+		else
+			fireworkModes = 1;
+
+		switch (fireworkModes) {
+		case 1:
+			text = "Fuegos artificales";
+			break;
+		case 2:
+			text = "Hacia arriba";
+			break;
+		case 3:
+			text = "Generador de particulas (Practica 1)";
+			break;
+		}
+		std::cout << "Modo: " << text << std::endl;
+		}
+		break;
+	case 'C':
+	{
+		if (count < 15)
+			count++;
+		else
+			count = 3;
+
+		std::cout << "Particulas: " << count << std::endl;
 	}
+	break;
 	default:
 		break;
 	}

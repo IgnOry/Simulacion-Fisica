@@ -1,21 +1,17 @@
 #include "ParticleGenerator.h"
 
-ParticleGenerator::ParticleGenerator(Vector3 pos, float spawnTime)
+ParticleGenerator::ParticleGenerator(Vector3 pos, float spawnTime, float lifeTime_): Particle(0.01f,color,pos,lifeTime_)
 {
-	position = pos;
-	transform = new PxTransform(position);
 	spawnRateTime = spawnTime;
-	rItem = new RenderItem(CreateShape(PxSphereGeometry(0.001f)), transform, color);
 	time_ = 0;
 }
 
 ParticleGenerator::~ParticleGenerator()
 {
-	while (!particlesVec.empty()) //Similar al usado en el vector de disparo, solo que se recorre entero en vez de borrar solo el primero
+	while (particlesVec.begin() != particlesVec.end())
 	{
-		auto it = particlesVec.begin();
-		Particle* p = (*it);
-		particlesVec.erase(it);
+		Particle* p = (*particlesVec.begin());
+		particlesVec.erase(particlesVec.begin());
 		delete p;
 	}
 }
@@ -27,25 +23,14 @@ void ParticleGenerator::createParticle(float time)
 
 		//Nueva particula, y se añade al vector
 		Particle* newP = new Particle(0.1, Vector4(1.0, 1.0, 1.0, 1), position, life); //tamaño reducido para que se aprecie mejor
-		newP->setDirVel(Vector3(0, -9.8, 0), random()); //-9.8, gravedad "realista"
+		newP->setDirVel(Vector3(0, -9.8, 0), Vector3(cos(rand() % 360) * 10, 10, sin(rand() % 360)*10)); //-9.8, gravedad "realista", 10 en la y para que salga hacia arriba
+		newP->setMass(1.0f);
+		newP->setDamping(1.0f);
 		particlesVec.push_back(newP);
 
 		time_ = 0;
 	}
 	time_ += time;
-}
-
-Vector3 ParticleGenerator::random() //Para dar un vector alatorio como velocity/direccion de movimiento
-{
-	int angle = rand() % 360; //*360 salen como si fuera una ducha
-
-	int x = cos(angle) * 10;
-	int y = 10; //Asi salen hacia arriba
-	int z = sin(angle) * 10;
-
-	Vector3 vec = Vector3(x, y, z);
-
-	return vec;
 }
 
 void ParticleGenerator::update(float time) //Crea particula nueva, actualiza el resto y borra si toca
@@ -63,7 +48,7 @@ void ParticleGenerator::update(float time) //Crea particula nueva, actualiza el 
 			delete p;
 			it = particlesVec.begin();
 		}
-		else if (!particlesVec.empty())
+		else if (!particlesVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
 			it++;
 	}
 }
