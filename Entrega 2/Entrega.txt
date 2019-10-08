@@ -1,0 +1,11 @@
+Práctica Partículas - Ignacio Ory Alonso
+
+Práctica 1
+
+Generador de particulas por defecto en la escena con parametros fijos, se mantiene la capacidad de disparar particulas adicionales con espacio, con limite por tiempo y/o 10 simultaneas
+
+Práctica 2
+
+Escena vacía por defecto. Con la tecla P se añaden particulas (sin limite de numero, se eliminan por tiempo), con la G se añade el generador de particulas de la practica 1 (posicion fija) y con la F se añaden fuegos artificiales.
+Con las teclas M y C se controlan, respectivamente, el modo de los fuegos artificiales y el numero de particulas que disparan, se muestra por consola.
+Toda la gestion de memoria se realiza con vectores para cada tipo de entidad, y el borrado se hace por tiempo en todos los casos.
