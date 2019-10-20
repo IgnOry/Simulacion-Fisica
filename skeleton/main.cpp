@@ -10,6 +10,10 @@
 #include "Particle.h"
 #include "ParticleGenerator.h"
 #include "Firework.h"
+#include "ParticleDrag.h"
+#include "ParticleForceGenerator.h"
+#include "ParticleForceRegistry.h"
+#include "ParticleGravity.h"
 #include <iostream>
 
 using namespace physx;
@@ -30,9 +34,9 @@ PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
 std::vector<ParticleGenerator*> generatorsVec;
-
 std::vector<Particle*> particlesVec;
 std::vector<Firework*> fireworksVec;
+ParticleGravity* grav;
 
 int fireworkModes = 1;
 int count = 3;
@@ -51,6 +55,9 @@ void initPhysics(bool interactive)
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+
+	//
+	grav = new ParticleGravity(Vector3(0, -9.8, 0));
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -81,6 +88,8 @@ void stepPhysics(bool interactive, double t)
 	while (!particlesVec.empty() && auxP != particlesVec.end()) {
 		Particle* p = (*auxP);
 
+		grav->updateForce(p, t);
+
 		p->update(t);
 
 		if (p->deathTime(t)) {
@@ -96,6 +105,9 @@ void stepPhysics(bool interactive, double t)
 	auto auxG = generatorsVec.begin();
 	while (!generatorsVec.empty() && auxG != generatorsVec.end()) {
 		ParticleGenerator* p = (*auxG);
+
+		grav->updateForce(p, t);
+
 		p->update(t);
 
 		if (p->deathTime(t)) {
