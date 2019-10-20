@@ -48,6 +48,8 @@ bool Firework::update(float t)
 {
 	if (isActive())
 	{
+
+
 		integrate(t);
 
 
@@ -61,7 +63,6 @@ bool Firework::update(float t)
 				payload->explode();
 			}
 		}
-
 	}
 	else
 	{
@@ -164,6 +165,28 @@ void Firework::Payload::update(float t)
 	auto it = particles.begin();
 	while (!particles.empty() && it != particles.end()) {
 		Particle* p = (*it);
+
+		switch (type)
+		{
+		case (FIREWORK_TYPE):
+			for (int i = 0; i < count; i++)
+			{
+				p->addForce(Vector3(0, -9.8, 0));
+			}
+			break;
+		case (WC_TYPE):
+			for (int i = 0; i < count; i++)
+			{
+				p->addForce(Vector3(0, 3, 0));
+			}
+			break;
+		case (ASPERSOR_TYPE):
+			for (int i = 0; i < count; i++)
+			{
+				p->addForce(Vector3(0, 4.5, 0));
+			}
+		}
+
 		p->update(t);
 
 		if (p->deathTime(t)) {

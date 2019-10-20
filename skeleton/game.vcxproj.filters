@@ -13,6 +13,10 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Firework.cpp" />
     <ClCompile Include="ParticleGenerator.cpp" />
+    <ClCompile Include="ParticleForceGenerator.cpp" />
+    <ClCompile Include="ParticleForceRegistry.cpp" />
+    <ClCompile Include="ParticleGravity.cpp" />
+    <ClCompile Include="ParticleDrag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -27,6 +31,10 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Firework.h" />
     <ClInclude Include="ParticleGenerator.h" />
+    <ClInclude Include="ParticleForceGenerator.h" />
+    <ClInclude Include="ParticleForceRegistry.h" />
+    <ClInclude Include="ParticleGravity.h" />
+    <ClInclude Include="ParticleDrag.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

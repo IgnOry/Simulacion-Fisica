@@ -10,6 +10,7 @@ Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int 
 	lifeTime = time;
 	count = count_;
 	repeat = repeat_;
+	force = Vector3(0, 0, 0);
 }
 
 Particle::~Particle()
@@ -32,17 +33,22 @@ void Particle::setRepeat(int repeat_)
 void Particle::integrate(float t)
 {
 	// Trivial case, infinite mass --> do nothing
-	if (inverseMass <= 0.0f) return;
+	if (hasInfiniteMass()) return;
 
 	// Update position
 	position += velocity * t;
 	*transform = PxTransform(position);
+	Vector3 totalAcc = acceleration;
+	totalAcc += force * inverseMass;
 
 	//Update linear velocity
-	velocity += acceleration * t;
+	velocity += totalAcc * t; //esto lo rompe visualmente
+	//velocity += acceleration * t;
 
 	//Impose drag (damping)
 	velocity *= powf(damping, t);
+
+	clearForce();
 }
 
 void Particle::setLifeTime(float time_)
@@ -63,6 +69,16 @@ bool Particle::deathTime(float t)
 		return true;
 	else
 		return false;
+}
+
+void Particle::clearForce()
+{
+	force = Vector3(0, 0, 0);
+}
+
+void Particle::addForce(const Vector3& f)
+{
+	force += f;
 }
 
 void Particle::setMass(float mass_)
@@ -93,6 +109,16 @@ int Particle::getCount()
 int Particle::getRepeat()
 {
 	return repeat;
+}
+
+bool Particle::hasInfiniteMass()
+{
+	return inverseMass <= 0.0f;
+}
+
+float Particle::getMass()
+{
+	return 1.0 / inverseMass;
 }
 
 void Particle::setPosition(Vector3 position_)
