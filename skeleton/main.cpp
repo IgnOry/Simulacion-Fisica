@@ -39,7 +39,7 @@ std::vector<Firework*> fireworksVec;
 
 int fireworkModes = 1;
 int count = 3;
-float g = 5.0;
+float g = 1.0;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -167,7 +167,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	break;
 	case 'G':
 		{
-		ParticleGenerator* gen = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f, 5.0f, Vector3(0, -g, 0));
+		ParticleGenerator* gen = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f, 5.0f, Vector3(0.0, -g, 0.0), Vector3(1.0, 0.0, 0.0));
 		generatorsVec.push_back(gen); 
 		}
 		break;

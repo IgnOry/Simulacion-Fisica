@@ -34,6 +34,7 @@ public:
 	int getRepeat();
 	bool hasInfiniteMass();
 	float getMass();
+	Vector3 force;
 
 protected:
 	float damping = 1.0f;
@@ -47,7 +48,6 @@ protected:
 	Vector3 acceleration;
 	Vector3 velocity;
 	Vector3 position;
-	Vector3 force;
 
 	Vector4 color;
 
