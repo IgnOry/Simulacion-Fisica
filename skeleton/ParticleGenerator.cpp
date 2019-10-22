@@ -6,7 +6,7 @@ ParticleGenerator::ParticleGenerator(Vector3 pos, float spawnTime, float lifeTim
 	time_ = 0;
 	gravity = new ParticleGravity(gravity_);
 	windGenerator = new WindGenerator(windDir, pos, 20.0f);
-	//explosionGenerator = new ExplosionGenerator(pos, 50.0f);
+	explosionGenerator = new ExplosionGenerator(pos, 50.0f);
 	forcesRegistry = new ParticleForceRegistry();
 }
 
@@ -21,7 +21,7 @@ ParticleGenerator::~ParticleGenerator()
 
 	delete gravity;
 	delete windGenerator;
-	//delete explosionGenerator;
+	delete explosionGenerator;
 
 	forcesRegistry->clear();
 	delete forcesRegistry;
@@ -40,7 +40,7 @@ void ParticleGenerator::createParticle(float time)
 		particlesVec.push_back(newP);
 		forcesRegistry->add(newP, windGenerator);
 		forcesRegistry->add(newP, gravity);
-		//forcesRegistry->add(newP, explosionGenerator);
+		forcesRegistry->add(newP, explosionGenerator);
 		time_ = 0;
 	}
 	time_ += time;
@@ -61,7 +61,7 @@ void ParticleGenerator::update(float time) //Crea particula nueva, actualiza el 
 		if (p->deathTime(time)) { //Si se borra, el iterador vuelve al principio
 			forcesRegistry->remove(p, windGenerator);
 			forcesRegistry->remove(p, gravity);
-			//forcesRegistry->remove(p, explosionGenerator);
+			forcesRegistry->remove(p, explosionGenerator);
 			particlesVec.erase(it);
 			delete p;
 			it = particlesVec.begin();
