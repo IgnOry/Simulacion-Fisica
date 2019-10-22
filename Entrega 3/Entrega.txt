@@ -1,0 +1,11 @@
+Practica 1
+
+Se añade el atributo force para administrar las fuerzas, y un ParticleGravity a ParticleSystem y ParticleGenerator para aplicarlas en su update. Con + y - puede modificarse la gravedad a aplicar.
+
+Practica 2
+
+Se añade WindGenerator y ParticleForceRegistry, se añaden las fuerzas a este último y se aplican en ParticleSystem.
+
+Practica 3
+
+Se añade ExplosionGenerator a ParticleSystem
