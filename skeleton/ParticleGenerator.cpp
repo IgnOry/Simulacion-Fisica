@@ -21,7 +21,7 @@ ParticleGenerator::~ParticleGenerator()
 
 	delete gravity;
 	delete windGenerator;
-	delete explosionGenerator;
+	//delete explosionGenerator;
 
 	forcesRegistry->clear();
 	delete forcesRegistry;
