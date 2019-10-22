@@ -1,9 +1,10 @@
 #include "ParticleGenerator.h"
 
-ParticleGenerator::ParticleGenerator(Vector3 pos, float spawnTime, float lifeTime_): Particle(0.01f,color,pos,lifeTime_)
+ParticleGenerator::ParticleGenerator(Vector3 pos, float spawnTime, float lifeTime_, Vector3 gravity_): Particle(0.01f,color,pos,lifeTime_)
 {
 	spawnRateTime = spawnTime;
 	time_ = 0;
+	gravity = new ParticleGravity(gravity_);
 }
 
 ParticleGenerator::~ParticleGenerator()
@@ -41,6 +42,8 @@ void ParticleGenerator::update(float time) //Crea particula nueva, actualiza el 
 	while (!particlesVec.empty() && it != particlesVec.end()) 
 	{
 		Particle* p = (*it);
+
+		gravity->updateForce(p, time);
 		p->update(time);
 
 		if (p->deathTime(time)) { //Si se borra, el iterador vuelve al principio

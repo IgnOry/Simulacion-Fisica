@@ -1,12 +1,12 @@
 #include "Firework.h"
 #include <iostream>
 
-Firework::Firework(float age_, Vector3 pos_, Vector3 vel_, int rule_, int type_, int count_): Particle(0.01f, color, pos_, age_)
+Firework::Firework(float age_, Vector3 pos_, Vector3 vel_, int rule_, int type_, int count_, Vector3 gravity_): Particle(0.01f, color, pos_, age_)
 {
 	setDirVel(Vector3(0, 0, 0), vel_);
 	rule = rule_;
 	rules[rule] = new FireworkRule();
-	initFireworkRules(type_, count_);
+	initFireworkRules(type_, count_, gravity_);
 	fireworkType = type_;
 }
 
@@ -37,19 +37,17 @@ Firework::~Firework()
 		delete rules[rule];
 }
 
-void Firework::initFireworkRules(int type_, int count_)
+void Firework::initFireworkRules(int type_, int count_, Vector3 gravity_)
 {
 	//rules[0] = new FireworkRule();
 	rules[rule]->setAll(type_, 1.0f, 5.0f, Vector3(-10, 30, -10), Vector3(10, 50, 10));
-	rules[rule]->payloads.push_back(new Payload(type_, count_));
+	rules[rule]->payloads.push_back(new Payload(type_, count_, gravity_));
 }
 
 bool Firework::update(float t)
 {
 	if (isActive())
 	{
-
-
 		integrate(t);
 
 
@@ -154,10 +152,11 @@ void Firework::FireworkRule::create(Firework* firework, const Firework* parent) 
 	firework->setDamping(damping);
 }
 
-Firework::Payload::Payload(unsigned type_, unsigned count_)
+Firework::Payload::Payload(unsigned type_, unsigned count_, Vector3 gravity_)
 {
 	type = type_;
 	count = count_;
+	gravity = new ParticleGravity(gravity_);
 }
 
 void Firework::Payload::update(float t)
@@ -186,6 +185,8 @@ void Firework::Payload::update(float t)
 				p->addForce(Vector3(0, 4.5, 0));
 			}
 		}
+
+		gravity->updateForce(p, t);
 
 		p->update(t);
 

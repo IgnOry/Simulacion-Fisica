@@ -1,5 +1,6 @@
 #pragma once
 #include "Particle.h"
+#include "ParticleGravity.h"
 
 enum Types { DISABLED_TYPE, FIREWORK_TYPE, WC_TYPE, ASPERSOR_TYPE };
 
@@ -9,13 +10,14 @@ public:
 	struct Payload
 	{
 		// Type of firework to create
-		Payload(unsigned type_, unsigned count_);
+		Payload(unsigned type_, unsigned count_, Vector3 gravity_);
 		
 		void update(float t);
 		void explode();
 		unsigned type;
 		unsigned count;
 		std::vector<Particle*> particles;
+		ParticleGravity* gravity;
 	};
 
 	struct FireworkRule
@@ -48,9 +50,9 @@ public:
 	int rule;
 	unsigned fireworkType;
 	FireworkRule** rules = new FireworkRule* [2];
-	Firework(float age_, Vector3 pos_, Vector3 vel_, int rule_, int type_, int count_);
+	Firework(float age_, Vector3 pos_, Vector3 vel_, int rule_, int type_, int count_, Vector3 gravity_);
 	~Firework();
-	void initFireworkRules(int type_, int count_);
+	void initFireworkRules(int type_, int count_, Vector3 gravity_);
 	void deleteFirework();
 	bool update(float t);
 	bool isActive() const;

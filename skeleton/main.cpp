@@ -36,10 +36,10 @@ ContactReportCallback gContactReportCallback;
 std::vector<ParticleGenerator*> generatorsVec;
 std::vector<Particle*> particlesVec;
 std::vector<Firework*> fireworksVec;
-ParticleGravity* grav;
 
 int fireworkModes = 1;
 int count = 3;
+float g = 5.0;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -55,9 +55,6 @@ void initPhysics(bool interactive)
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
-	//
-	grav = new ParticleGravity(Vector3(0, -9.8, 0));
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -88,8 +85,6 @@ void stepPhysics(bool interactive, double t)
 	while (!particlesVec.empty() && auxP != particlesVec.end()) {
 		Particle* p = (*auxP);
 
-		grav->updateForce(p, t);
-
 		p->update(t);
 
 		if (p->deathTime(t)) {
@@ -105,8 +100,6 @@ void stepPhysics(bool interactive, double t)
 	auto auxG = generatorsVec.begin();
 	while (!generatorsVec.empty() && auxG != generatorsVec.end()) {
 		ParticleGenerator* p = (*auxG);
-
-		grav->updateForce(p, t);
 
 		p->update(t);
 
@@ -133,6 +126,7 @@ void stepPhysics(bool interactive, double t)
 		else if (!fireworksVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
 			auxF++;
 	}
+
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
@@ -167,13 +161,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case 'F':
 	{
-		Firework* f = new Firework(0.05f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), 0, fireworkModes, count);
+		Firework* f = new Firework(0.05f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), 0, fireworkModes, count, Vector3(0, -g, 0));
 		fireworksVec.push_back(f);
 	}
 	break;
 	case 'G':
 		{
-		ParticleGenerator* gen = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f, 5.0f);
+		ParticleGenerator* gen = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f, 5.0f, Vector3(0, -g, 0));
 		generatorsVec.push_back(gen); 
 		}
 		break;
@@ -212,15 +206,26 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		}
 		break;
 	case 'C':
-	{
+		{
 		if (count < 15)
 			count++;
 		else
 			count = 3;
 
 		std::cout << "Particulas: " << count << std::endl;
-	}
-	break;
+		}
+	case '+':
+		{
+		g += 0.5;
+		std::cout << "Gravedad: " << g << std::endl;
+		}
+		break;
+	case '-':
+		{
+		g -= 0.5;
+		std::cout << "Gravedad: " << g << std::endl;
+		}
+		break;
 	default:
 		break;
 	}

@@ -42,7 +42,7 @@ void Particle::integrate(float t)
 	totalAcc += force * inverseMass;
 
 	//Update linear velocity
-	velocity += totalAcc * t; //esto lo rompe visualmente
+	velocity += totalAcc * t;
 	//velocity += acceleration * t;
 
 	//Impose drag (damping)
@@ -113,7 +113,7 @@ int Particle::getRepeat()
 
 bool Particle::hasInfiniteMass()
 {
-	return inverseMass <= 0.0f;
+	return getMass() <= 0.0f;
 }
 
 float Particle::getMass()

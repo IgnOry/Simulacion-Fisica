@@ -38,7 +38,7 @@ public:
 protected:
 	float damping = 1.0f;
 	float radius;
-	float inverseMass = 45.0f;
+	float inverseMass = 1.0/45.0;
 	float lifeTime;
 
 	int repeat;
