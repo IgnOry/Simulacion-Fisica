@@ -26,6 +26,7 @@ public:
 	void setLifeTime(float time_);
 	void setDirVel(Vector3 acc = Vector3(1.0, 0, 0), Vector3 vel = Vector3(1.0, 0, 0));
 	void setRepeat(int repeat_);
+	void setRItem(int shape);
 
 	//Getters
 	Vector3 getPosition() const;

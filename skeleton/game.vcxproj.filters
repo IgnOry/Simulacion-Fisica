@@ -19,6 +19,10 @@
     <ClCompile Include="ParticleDrag.cpp" />
     <ClCompile Include="WindGenerator.cpp" />
     <ClCompile Include="ExplosionGenerator.cpp" />
+    <ClCompile Include="ParticleSpring.cpp" />
+    <ClCompile Include="ParticleAnchoredSpring.cpp" />
+    <ClCompile Include="ParticleBungie.cpp" />
+    <ClCompile Include="ParticleBuoyancy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -39,6 +43,10 @@
     <ClInclude Include="ParticleDrag.h" />
     <ClInclude Include="WindGenerator.h" />
     <ClInclude Include="ExplosionGenerator.h" />
+    <ClInclude Include="ParticleSpring.h" />
+    <ClInclude Include="ParticleAnchoredSpring.h" />
+    <ClInclude Include="ParticleBungie.h" />
+    <ClInclude Include="ParticleBuoyancy.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

@@ -14,6 +14,7 @@
 #include "ParticleForceGenerator.h"
 #include "ParticleForceRegistry.h"
 #include "ParticleGravity.h"
+#include "ParticleSpring.h"
 #include <iostream>
 
 using namespace physx;
@@ -41,6 +42,9 @@ int fireworkModes = 1;
 int count = 3;
 float g = 1.0;
 
+ParticleSpring* spring;
+Particle* p;
+
 // Initialize physics engine
 void initPhysics(bool interactive)
 {
@@ -66,10 +70,8 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
-	
-	//particula = new Particle(1.0f);
-	//particula->setDirVel();
-
+	spring = new ParticleSpring(1.0, 1.0);
+	p = new Particle(1.0, Vector4(1.0,1.0,1.0,1.0), Vector3(5,5,5), 50.0);
 }
 
 
@@ -126,6 +128,10 @@ void stepPhysics(bool interactive, double t)
 		else if (!fireworksVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
 			auxF++;
 	}
+
+	p->addForce(Vector3(1.0, 1.0, 1.0));
+	spring->updateForce(p, t);
+
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);

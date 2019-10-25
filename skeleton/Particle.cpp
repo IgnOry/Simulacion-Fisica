@@ -30,6 +30,22 @@ void Particle::setRepeat(int repeat_)
 	repeat = repeat_;
 }
 
+void Particle::setRItem(int shape)
+{
+	//case 0, esfera
+	if (shape == 0)
+	{
+		rItem->release();
+		rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
+	}
+	//case 1
+	else if (shape == 1)
+	{
+		rItem->release();
+		rItem = new RenderItem(CreateShape(PxBoxGeometry(1,1,1)), transform, Vector4(1.0, 0.9, 0, 1.0));
+	}
+}
+
 void Particle::integrate(float t)
 {
 	// Trivial case, infinite mass --> do nothing
