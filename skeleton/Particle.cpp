@@ -11,6 +11,9 @@ Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int 
 	count = count_;
 	repeat = repeat_;
 	force = Vector3(0, 0, 0);
+	setDirVel(Vector3(0, 0, 0), Vector3(0, 0, 0));
+	setMass(1.0);
+	setDamping(1.0);
 }
 
 Particle::~Particle()

@@ -44,6 +44,7 @@ float g = 1.0;
 
 ParticleSpring* spring;
 Particle* p;
+ParticleForceRegistry* pfRegistry;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -70,8 +71,10 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
+	pfRegistry = new ParticleForceRegistry();
 	spring = new ParticleSpring(1.0, 1.0);
 	p = new Particle(1.0, Vector4(1.0,1.0,1.0,1.0), Vector3(5,5,5), 50.0);
+	pfRegistry->add(p, spring);
 }
 
 
@@ -129,9 +132,9 @@ void stepPhysics(bool interactive, double t)
 			auxF++;
 	}
 
-	p->addForce(Vector3(1.0, 1.0, 1.0));
-	spring->updateForce(p, t);
-
+	pfRegistry->updateForces(t);
+	//spring->updateForce(p, t);
+	p->update(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
