@@ -14,7 +14,6 @@
 #include "ParticleForceGenerator.h"
 #include "ParticleForceRegistry.h"
 #include "ParticleGravity.h"
-#include "ParticleSpring.h"
 #include <iostream>
 
 using namespace physx;
@@ -22,16 +21,16 @@ using namespace physx;
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;
 
-PxFoundation*			gFoundation = NULL;
-PxPhysics*				gPhysics	= NULL;
+PxFoundation* gFoundation = NULL;
+PxPhysics* gPhysics = NULL;
 
 
-PxMaterial*				gMaterial	= NULL;
+PxMaterial* gMaterial = NULL;
 
-PxPvd*                  gPvd        = NULL;
+PxPvd* gPvd = NULL;
 
-PxDefaultCpuDispatcher*	gDispatcher = NULL;
-PxScene*				gScene      = NULL;
+PxDefaultCpuDispatcher* gDispatcher = NULL;
+PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
 
 std::vector<ParticleGenerator*> generatorsVec;
@@ -42,10 +41,6 @@ int fireworkModes = 1;
 int count = 3;
 float g = 1.0;
 
-ParticleSpring* spring;
-Particle* p;
-ParticleForceRegistry* pfRegistry;
-
 // Initialize physics engine
 void initPhysics(bool interactive)
 {
@@ -55,9 +50,9 @@ void initPhysics(bool interactive)
 
 	gPvd = PxCreatePvd(*gFoundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-	gPvd->connect(*transport,PxPvdInstrumentationFlag::eALL);
+	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
-	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
+	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
@@ -71,10 +66,10 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
-	pfRegistry = new ParticleForceRegistry();
-	spring = new ParticleSpring(1.0, 1.0);
-	p = new Particle(1.0, Vector4(1.0,1.0,1.0,1.0), Vector3(5,5,5), 50.0);
-	pfRegistry->add(p, spring);
+
+	//particula = new Particle(1.0f);
+	//particula->setDirVel();
+
 }
 
 
@@ -84,7 +79,7 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
-		
+
 	auto auxP = particlesVec.begin();
 
 	while (!particlesVec.empty() && auxP != particlesVec.end()) {
@@ -113,7 +108,7 @@ void stepPhysics(bool interactive, double t)
 			delete p;
 			auxG = generatorsVec.begin();
 		}
-		
+
 		else if (!generatorsVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
 			auxG++;
 	}
@@ -132,10 +127,6 @@ void stepPhysics(bool interactive, double t)
 			auxF++;
 	}
 
-	pfRegistry->updateForces(t);
-	//spring->updateForce(p, t);
-	p->update(t);
-
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
@@ -150,11 +141,11 @@ void cleanupPhysics(bool interactive)
 	gScene->release();
 	gDispatcher->release();
 	// -----------------------------------------------------
-	gPhysics->release();	
+	gPhysics->release();
 	PxPvdTransport* transport = gPvd->getTransport();
 	gPvd->release();
 	transport->release();
-	
+
 	gFoundation->release();
 }
 
@@ -164,10 +155,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	PX_UNUSED(camera);
 	std::string text = "";
 
-	switch(toupper(key))
+	switch (toupper(key))
 	{
-	//case 'B': break;
-	//case ' ':	break;
+		//case 'B': break;
+		//case ' ':	break;
 	case 'F':
 	{
 		Firework* f = new Firework(0.05f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), 0, fireworkModes, count, Vector3(0, -g, 0));
@@ -175,13 +166,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	break;
 	case 'G':
-		{
+	{
 		ParticleGenerator* gen = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f, 5.0f, Vector3(0.0, -g, 0.0), Vector3(1.0, 0.0, 0.0));
-		generatorsVec.push_back(gen); 
-		}
-		break;
+		generatorsVec.push_back(gen);
+	}
+	break;
 	case 'P':
-		{
+	{
 		if (particlesVec.size() == 10)
 		{
 			Particle* aux = *particlesVec.begin();
@@ -191,10 +182,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		Particle* p = new Particle(1, Vector4(0.0, 1.0, 0.0, 1.0), GetCamera()->getTransform().p, 5.0f);
 		p->setDirVel(Vector3(0.0, 0.0, 0.0), GetCamera()->getDir());
 		particlesVec.push_back(p);
-		}
-		break;
+	}
+	break;
 	case 'M':
-		{
+	{
 		if (fireworkModes < 3)
 			fireworkModes++;
 		else
@@ -212,29 +203,29 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			break;
 		}
 		std::cout << "Modo: " << text << std::endl;
-		}
-		break;
+	}
+	break;
 	case 'C':
-		{
+	{
 		if (count < 15)
 			count++;
 		else
 			count = 3;
 
 		std::cout << "Particulas: " << count << std::endl;
-		}
+	}
 	case '+':
-		{
+	{
 		g += 0.5;
 		std::cout << "Gravedad: " << g << std::endl;
-		}
-		break;
+	}
+	break;
 	case '-':
-		{
+	{
 		g -= 0.5;
 		std::cout << "Gravedad: " << g << std::endl;
-		}
-		break;
+	}
+	break;
 	default:
 		break;
 	}
@@ -247,7 +238,7 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 }
 
 
-int main(int, const char*const*)
+int main(int, const char* const*)
 {
 #ifndef OFFLINE_EXECUTION 
 	extern void renderLoop();
@@ -255,7 +246,7 @@ int main(int, const char*const*)
 #else
 	static const PxU32 frameCount = 100;
 	initPhysics(false);
-	for(PxU32 i=0; i<frameCount; i++)
+	for (PxU32 i = 0; i < frameCount; i++)
 		stepPhysics(false);
 	cleanupPhysics(false);
 #endif

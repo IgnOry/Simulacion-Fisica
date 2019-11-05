@@ -1,0 +1,15 @@
+Se utiliza la misma escena para mostrar las 3 prácticas. Todas las partículas están añadidas al campo de gravedad local. Con espacio se crea un campo de viento como se indica en el enunciado, 
+también para hacer más apreciable el efecto, que afecta a todas las partículas de la escena. Se mantiene la estructura de clases dada en las transparencias, 
+y se utilizan vectores para la gestión de memoria (se recorren y borran los contenidos si corresponde).
+
+Práctica 1
+
+Partícula blanca.
+
+Práctica 2
+
+Partículas azules (claro y oscuro). Se comienza con un campo de viento extra que solo afecta a la particula oscura para pareciar el efecto.
+
+Práctica 3
+
+Partícula Verde, hace uso de la clase dada en las transparencias.
