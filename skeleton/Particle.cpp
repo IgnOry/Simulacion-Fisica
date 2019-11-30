@@ -52,6 +52,16 @@ void Particle::setRItem(int shape)
 	}
 }
 
+void Particle::setVelocity(Vector3 vel_)
+{
+	velocity = vel_;
+}
+
+void Particle::setAcceleration(Vector3 acc_)
+{
+	acceleration = acc_;
+}
+
 void Particle::integrate(float t)
 {
 	// Trivial case, infinite mass --> do nothing
@@ -121,6 +131,11 @@ Vector3 Particle::getPosition() const
 Vector3 Particle::getVelocity() const
 {
 	return velocity;
+}
+
+float Particle::getInverseMass()
+{
+	return inverseMass;
 }
 
 int Particle::getCount()

@@ -14,6 +14,7 @@
 #include "ParticleForceGenerator.h"
 #include "ParticleForceRegistry.h"
 #include "ParticleGravity.h"
+#include "ParticleCable.h"
 #include <iostream>
 
 using namespace physx;
@@ -37,6 +38,10 @@ std::vector<ParticleGenerator*> generatorsVec;
 std::vector<Particle*> particlesVec;
 std::vector<Firework*> fireworksVec;
 
+ParticleCable* cable;
+ParticleContact* contact;
+Particle* p1;
+Particle* p2;
 int fireworkModes = 1;
 int count = 3;
 float g = 1.0;
@@ -66,7 +71,23 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
+	cable = new ParticleCable();
+	contact = new ParticleContact();
 
+	p1 = new Particle(1.0, Vector4(1.0, 0.0, 0.0, 1.0), Vector3(5.0, 0.0, 0.0));
+	p2 = new Particle(1.0, Vector4(0.0, 0.0, 1.0, 1.0), Vector3(5.0, 0.0, 5.0));
+
+	cable->particle[0] = p1;
+	cable->particle[1] = p2;
+
+	//contact->particle[0] = p1;
+	//contact->particle[1] = p2;
+
+	cable->addContact(contact, 5);
+	cable->maxLength = 5;
+	cable->restitution = 1;
+
+	p1->setVelocity(Vector3(1, 0, 0));
 	//particula = new Particle(1.0f);
 	//particula->setDirVel();
 
@@ -126,6 +147,11 @@ void stepPhysics(bool interactive, double t)
 		else if (!fireworksVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
 			auxF++;
 	}
+
+	contact->resolve(t);
+
+	p1->update(t);
+	p2->update(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);

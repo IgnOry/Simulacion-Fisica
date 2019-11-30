@@ -11,4 +11,5 @@ void ParticleContactGenerator::resolveContacts(ParticleContact* contactArray, un
 		// Resolve this contact
 		// Update the interpenetrations for all particles
 		iterationsUsed++;
+	}
 }

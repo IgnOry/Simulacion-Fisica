@@ -27,10 +27,13 @@ public:
 	void setDirVel(Vector3 acc = Vector3(1.0, 0, 0), Vector3 vel = Vector3(1.0, 0, 0));
 	void setRepeat(int repeat_);
 	void setRItem(int shape);
+	void setVelocity(Vector3 vel_);
+	void setAcceleration(Vector3 acc_);
 
 	//Getters
 	Vector3 getPosition() const;
 	Vector3 getVelocity() const;
+	float getInverseMass();
 	int getCount();
 	int getRepeat();
 	bool hasInfiniteMass();
