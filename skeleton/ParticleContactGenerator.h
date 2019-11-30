@@ -1,17 +1,10 @@
 #pragma once
 #include "ParticleContact.h"
 
-class ParticleContactGenerator: public ParticleContact
+class ParticleContactGenerator
 {
 	public:
 	
-	void resolveContacts(ParticleContact* contactArray, unsigned numContacts, float t);
-
-	protected:
-	
-	//Probably moved
-	int iterations;
-	int iterationsUsed;
-	int maxIndex;
+		virtual unsigned addContact(ParticleContact* contact, unsigned limit) const = 0;
 };
 

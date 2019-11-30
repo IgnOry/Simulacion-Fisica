@@ -15,6 +15,8 @@
 #include "ParticleForceRegistry.h"
 #include "ParticleGravity.h"
 #include "ParticleCable.h"
+#include "ParticleContactResolver.h"
+#include "ParticleRod.h"
 #include <iostream>
 
 using namespace physx;
@@ -38,8 +40,10 @@ std::vector<ParticleGenerator*> generatorsVec;
 std::vector<Particle*> particlesVec;
 std::vector<Firework*> fireworksVec;
 
-ParticleCable* cable;
+ParticleRod* barra;
 ParticleContact* contact;
+ParticleContactResolver* resolver;
+
 Particle* p1;
 Particle* p2;
 int fireworkModes = 1;
@@ -71,23 +75,21 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
-	cable = new ParticleCable();
+	resolver = new ParticleContactResolver(50);
+	barra = new ParticleRod();
 	contact = new ParticleContact();
 
 	p1 = new Particle(1.0, Vector4(1.0, 0.0, 0.0, 1.0), Vector3(5.0, 0.0, 0.0));
 	p2 = new Particle(1.0, Vector4(0.0, 0.0, 1.0, 1.0), Vector3(5.0, 0.0, 5.0));
 
-	cable->particle[0] = p1;
-	cable->particle[1] = p2;
+	barra->particle[0] = p1;
+	barra->particle[1] = p2;
 
 	//contact->particle[0] = p1;
 	//contact->particle[1] = p2;
 
-	cable->addContact(contact, 5);
-	cable->maxLength = 5;
-	cable->restitution = 1;
+	barra->length = 5;
 
-	p1->setVelocity(Vector3(1, 0, 0));
 	//particula = new Particle(1.0f);
 	//particula->setDirVel();
 
@@ -148,10 +150,14 @@ void stepPhysics(bool interactive, double t)
 			auxF++;
 	}
 
-	contact->resolve(t);
+	//contact->resolve(t);
+
+	//resolver->resolveContacts(contact, 1, t);
 
 	p1->update(t);
 	p2->update(t);
+
+	//barra->addContact(contact, 5);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -252,6 +258,19 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		std::cout << "Gravedad: " << g << std::endl;
 	}
 	break;
+
+	case 'V':
+	{
+		p1->setVelocity(Vector3(1.0, 0.0, 0.0));
+	}
+	break;
+
+	case 'B':
+	{
+		p1->setVelocity(Vector3(0.0, 0.0, 0.0));
+	}
+	break;
+
 	default:
 		break;
 	}

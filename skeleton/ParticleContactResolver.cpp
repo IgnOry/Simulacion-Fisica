@@ -1,11 +1,13 @@
 #include "ParticleContactResolver.h"
 
-ParticleContactResolver::ParticleContactResolver(unsigned iterations)
+ParticleContactResolver::ParticleContactResolver(unsigned iterations_)
 {
+	iterations = iterations_;
 }
 
-void ParticleContactResolver::setIterations(unsigned iterations)
+void ParticleContactResolver::setIterations(unsigned iterations_)
 {
+	iterations = iterations_;
 }
 
 void ParticleContactResolver::resolveContacts(ParticleContact* contactArray, unsigned numContacts, float duration)
