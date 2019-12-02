@@ -167,10 +167,6 @@ void stepPhysics(bool interactive, double t)
 
 	contactManager->update(t);
 
-	//contact->resolve(t);
-
-	//resolver->resolveContacts(contact, 1, t);
-
 	p1->update(t);
 	p2->update(t);
 	p3->update(t);

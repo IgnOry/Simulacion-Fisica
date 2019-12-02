@@ -264,7 +264,6 @@
     <ClCompile Include="ParticleCable.cpp" />
     <ClCompile Include="ParticleContact.cpp" />
     <ClCompile Include="ParticleContactManager.cpp" />
-    <ClCompile Include="ParticleContactResolver.cpp" />
     <ClCompile Include="ParticleDrag.cpp" />
     <ClCompile Include="ParticleForceGenerator.cpp" />
     <ClCompile Include="ParticleForceRegistry.cpp" />
@@ -291,7 +290,6 @@
     <ClInclude Include="ParticleCable.h" />
     <ClInclude Include="ParticleContact.h" />
     <ClInclude Include="ParticleContactManager.h" />
-    <ClInclude Include="ParticleContactResolver.h" />
     <ClInclude Include="ParticleDrag.h" />
     <ClInclude Include="ParticleForceGenerator.h" />
     <ClInclude Include="ParticleForceRegistry.h" />

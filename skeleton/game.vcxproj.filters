@@ -24,7 +24,6 @@
     <ClCompile Include="ParticleBungie.cpp" />
     <ClCompile Include="ParticleBuoyancy.cpp" />
     <ClCompile Include="ParticleContact.cpp" />
-    <ClCompile Include="ParticleContactResolver.cpp" />
     <ClCompile Include="ParticleLink.cpp" />
     <ClCompile Include="ParticleCable.cpp" />
     <ClCompile Include="ParticleRod.cpp" />
@@ -55,7 +54,6 @@
     <ClInclude Include="ParticleBungie.h" />
     <ClInclude Include="ParticleBuoyancy.h" />
     <ClInclude Include="ParticleContact.h" />
-    <ClInclude Include="ParticleContactResolver.h" />
     <ClInclude Include="ParticleLink.h" />
     <ClInclude Include="ParticleCable.h" />
     <ClInclude Include="ParticleRod.h" />
