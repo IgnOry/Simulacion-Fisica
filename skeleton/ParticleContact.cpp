@@ -67,11 +67,9 @@ void ParticleContact::resolveInterpenetration(float t)
 	Vector3 movePerIMass = contactNormal *
 		(-penetration / totalInverseMass);
 	// Apply the penetration resolution.
-	particle[0]->setPosition(particle[0]->getPosition() +
-		movePerIMass * particle[0]->getInverseMass());
+	particle[0]->setPosition(particle[0]->getPosition() +	movePerIMass * particle[0]->getInverseMass());
 	if (particle[1])
 	{
-		particle[1]->setPosition(particle[1]->getPosition() +
-			movePerIMass * particle[1]->getInverseMass());
+		particle[1]->setPosition(particle[1]->getPosition() +	movePerIMass * particle[1]->getInverseMass());
 	}
 }

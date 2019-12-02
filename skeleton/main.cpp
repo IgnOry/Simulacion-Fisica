@@ -3,6 +3,7 @@
 #include <PxPhysicsAPI.h>
 
 #include <vector>
+#include <queue>
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
@@ -40,15 +41,17 @@ ContactReportCallback gContactReportCallback;
 std::vector<ParticleGenerator*> generatorsVec;
 std::vector<Particle*> particlesVec;
 std::vector<Firework*> fireworksVec;
-std::vector<ParticleContact*> contactsVec;
 
 ParticleContactManager* contactManager;
 ParticleRod* barra;
+ParticleCable* cable;
 ParticleContact* contact;
-ParticleContactResolver* resolver;
+ParticleContact* contact2;
 
 Particle* p1;
 Particle* p2;
+Particle* p3;
+Particle* p4;
 int fireworkModes = 1;
 int count = 3;
 float g = 1.0;
@@ -78,9 +81,10 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
-	resolver = new ParticleContactResolver(50);
 	barra = new ParticleRod();
+	cable = new ParticleCable();
 	contact = new ParticleContact();
+	contact2 = new ParticleContact();
 	contactManager = new ParticleContactManager();
 
 	p1 = new Particle(1.0, Vector4(1.0, 0.0, 0.0, 1.0), Vector3(5.0, 0.0, 0.0));
@@ -89,16 +93,15 @@ void initPhysics(bool interactive)
 	barra->particle[0] = p1;
 	barra->particle[1] = p2;
 	barra->length = 5;
-	barra->addContact(contact, 1);
 
-	contactsVec.push_back(contact);
+
+	p3 = new Particle(1.0, Vector4(0.0, 0.0, 0.0, 1.0), Vector3(5.0, 3.0, 0.0));
+	p4 = new Particle(1.0, Vector4(1.0, 1.0, 1.0, 1.0), Vector3(5.0, 3.0, 5.0));
 	
-	//contact->particle[0] = p1;
-	//contact->particle[1] = p2;
-
-	//particula = new Particle(1.0f);
-	//particula->setDirVel();
-
+	cable->particle[0] = p3;
+	cable->particle[1] = p4;
+	cable->maxLength = 5;
+	cable->restitution = 0;
 }
 
 
@@ -156,28 +159,22 @@ void stepPhysics(bool interactive, double t)
 			auxF++;
 	}
 
-	auto auxC = contactsVec.begin();
-	while (!contactsVec.empty() && auxC != contactsVec.end()) {
-		ParticleContact* cont = (*auxC);
+	if (barra->addContact(contact))
+		contactManager->addContact(contact);
 
-		contactManager->update(cont, t);
-		/*if (f != nullptr) {
-			contactsVec.erase(contactsVec.begin());
-			delete f;
-			auxC = contactsVec.begin();
-		}*/
+	if (cable->addContact(contact2))
+		contactManager->addContact(contact2);
 
-		if (auxC != contactsVec.end()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-			auxC++;
-	}
+	contactManager->update(t);
+
 	//contact->resolve(t);
 
 	//resolver->resolveContacts(contact, 1, t);
 
 	p1->update(t);
 	p2->update(t);
-
-	//barra->addContact(contact, 5);
+	p3->update(t);
+	p4->update(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -282,12 +279,23 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'V':
 	{
 		p1->setVelocity(Vector3(1.0, 0.0, 0.0));
+
 	}
 	break;
 
 	case 'B':
 	{
 		p1->setVelocity(Vector3(0.0, 0.0, 0.0));
+	}
+	break;
+	case 'H':
+	{
+		p3->setVelocity(Vector3(1.0, 0.0, 0.0));
+	}
+	break;
+	case 'J':
+	{
+		p3->setVelocity(Vector3(0.0, 0.0, 0.0));
 	}
 	break;
 

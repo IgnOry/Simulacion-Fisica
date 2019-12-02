@@ -8,6 +8,6 @@ public:
 	// Holds the restitution (bounciness) of the cable.
 	float restitution;
 public:
-	virtual unsigned addContact(ParticleContact* contact, unsigned limit) const;
+	virtual unsigned addContact(ParticleContact* contact) const;
 };
 

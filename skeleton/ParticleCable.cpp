@@ -1,6 +1,6 @@
 #include "ParticleCable.h"
 
-unsigned ParticleCable::addContact(ParticleContact* contact, unsigned limit) const
+unsigned ParticleCable::addContact(ParticleContact* contact) const
 {
 	// Find the length of the cable.
 	float length = currentLength();

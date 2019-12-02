@@ -6,6 +6,6 @@ class ParticleRod: public ParticleLink
 public:
 	float length;
 public:
-	virtual unsigned addContact(ParticleContact* contact, unsigned limit) const;
+	virtual unsigned addContact(ParticleContact* contact) const;
 };
 

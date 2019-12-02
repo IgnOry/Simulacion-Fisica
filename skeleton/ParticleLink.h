@@ -9,6 +9,6 @@ class ParticleLink
 	protected:
 		float currentLength() const;
 	public:
-		virtual unsigned addContact(ParticleContact* contact, unsigned limit) const = 0;
+		virtual unsigned addContact(ParticleContact* contact) const = 0;
 };
 
