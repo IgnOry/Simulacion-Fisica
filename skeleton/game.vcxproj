@@ -263,7 +263,7 @@
     <ClCompile Include="ParticleBuoyancy.cpp" />
     <ClCompile Include="ParticleCable.cpp" />
     <ClCompile Include="ParticleContact.cpp" />
-    <ClCompile Include="ParticleContactGenerator.cpp" />
+    <ClCompile Include="ParticleContactManager.cpp" />
     <ClCompile Include="ParticleContactResolver.cpp" />
     <ClCompile Include="ParticleDrag.cpp" />
     <ClCompile Include="ParticleForceGenerator.cpp" />
@@ -289,7 +289,7 @@
     <ClInclude Include="ParticleBuoyancy.h" />
     <ClInclude Include="ParticleCable.h" />
     <ClInclude Include="ParticleContact.h" />
-    <ClInclude Include="ParticleContactGenerator.h" />
+    <ClInclude Include="ParticleContactManager.h" />
     <ClInclude Include="ParticleContactResolver.h" />
     <ClInclude Include="ParticleDrag.h" />
     <ClInclude Include="ParticleForceGenerator.h" />

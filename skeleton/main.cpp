@@ -17,6 +17,7 @@
 #include "ParticleCable.h"
 #include "ParticleContactResolver.h"
 #include "ParticleRod.h"
+#include "ParticleContactManager.h"
 #include <iostream>
 
 using namespace physx;
@@ -39,7 +40,9 @@ ContactReportCallback gContactReportCallback;
 std::vector<ParticleGenerator*> generatorsVec;
 std::vector<Particle*> particlesVec;
 std::vector<Firework*> fireworksVec;
+std::vector<ParticleContact*> contactsVec;
 
+ParticleContactManager* contactManager;
 ParticleRod* barra;
 ParticleContact* contact;
 ParticleContactResolver* resolver;
@@ -78,17 +81,20 @@ void initPhysics(bool interactive)
 	resolver = new ParticleContactResolver(50);
 	barra = new ParticleRod();
 	contact = new ParticleContact();
+	contactManager = new ParticleContactManager();
 
 	p1 = new Particle(1.0, Vector4(1.0, 0.0, 0.0, 1.0), Vector3(5.0, 0.0, 0.0));
 	p2 = new Particle(1.0, Vector4(0.0, 0.0, 1.0, 1.0), Vector3(5.0, 0.0, 5.0));
 
 	barra->particle[0] = p1;
 	barra->particle[1] = p2;
+	barra->length = 5;
+	barra->addContact(contact, 1);
 
+	contactsVec.push_back(contact);
+	
 	//contact->particle[0] = p1;
 	//contact->particle[1] = p2;
-
-	barra->length = 5;
 
 	//particula = new Particle(1.0f);
 	//particula->setDirVel();
@@ -150,6 +156,20 @@ void stepPhysics(bool interactive, double t)
 			auxF++;
 	}
 
+	auto auxC = contactsVec.begin();
+	while (!contactsVec.empty() && auxC != contactsVec.end()) {
+		ParticleContact* cont = (*auxC);
+
+		contactManager->update(cont, t);
+		/*if (f != nullptr) {
+			contactsVec.erase(contactsVec.begin());
+			delete f;
+			auxC = contactsVec.begin();
+		}*/
+
+		if (auxC != contactsVec.end()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+			auxC++;
+	}
 	//contact->resolve(t);
 
 	//resolver->resolveContacts(contact, 1, t);

@@ -26,9 +26,9 @@
     <ClCompile Include="ParticleContact.cpp" />
     <ClCompile Include="ParticleContactResolver.cpp" />
     <ClCompile Include="ParticleLink.cpp" />
-    <ClCompile Include="ParticleContactGenerator.cpp" />
     <ClCompile Include="ParticleCable.cpp" />
     <ClCompile Include="ParticleRod.cpp" />
+    <ClCompile Include="ParticleContactManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -56,9 +56,9 @@
     <ClInclude Include="ParticleContact.h" />
     <ClInclude Include="ParticleContactResolver.h" />
     <ClInclude Include="ParticleLink.h" />
-    <ClInclude Include="ParticleContactGenerator.h" />
     <ClInclude Include="ParticleCable.h" />
     <ClInclude Include="ParticleRod.h" />
+    <ClInclude Include="ParticleContactManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

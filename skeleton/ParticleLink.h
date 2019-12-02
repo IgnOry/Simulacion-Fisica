@@ -1,7 +1,7 @@
 #pragma once
-#include "ParticleContactGenerator.h"
+#include "ParticleContact.h"
 
-class ParticleLink :	public ParticleContactGenerator
+class ParticleLink
 {
 	public:
 		//Holds the pair of particles that are connected by this link.
