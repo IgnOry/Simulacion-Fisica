@@ -19,6 +19,44 @@ Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int 
 	setDamping(1.0);
 }
 
+Particle::Particle(float radius, Vector3 pos, PxScene* scene, PxPhysics* pxphy_, bool dyn, int type)
+{
+	PxShape* shape;
+	if (type == 0)
+		shape = CreateShape(PxSphereGeometry(radius));
+	else if (type == 1)
+		shape = CreateShape(PxBoxGeometry(radius, 1, radius));
+
+	PxTransform* tr = new PxTransform(pos);
+
+	if (dyn)
+	{
+		din = pxphy_->createRigidDynamic(*tr);
+		scene->addActor(*din);
+		din->attachShape(*shape);
+
+		PxRigidBodyExt::updateMassAndInertia(*din, 1);
+
+		setMass(1.0);
+		setDamping(1.0);
+		din->setLinearDamping(1.0);
+
+		rItem = new RenderItem(shape, din, Vector4(1, 0, 0, 1));
+	}
+
+	else
+	{ 
+		sta = pxphy_->createRigidStatic(*tr);
+		scene->addActor(*sta);
+		sta->attachShape(*shape);
+
+
+		setMass(1.0);
+
+		rItem = new RenderItem(shape, sta, Vector4(1,1,1,1));
+	}
+}
+
 Particle::~Particle()
 {
 	delete transform;

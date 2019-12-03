@@ -21,5 +21,7 @@ public:
 	void clear();
 	// Update all the generators in the registry
 	void updateForces(float t);
+	void PxUpdateForces(float t);
+
 };
 

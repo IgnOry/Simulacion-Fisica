@@ -9,6 +9,7 @@ class Particle
 {
 public:
 	Particle(float radius = 1.0f, Vector4 c = Vector4(0.5, 0.5, 0.5, 1), Vector3 pos = Vector3(0.0f, 0.0f, 0.0f), float time = 1.0f, int count_ = 50, int repeat_ = 0, int type = 0);
+	Particle(float radius, Vector3 pos, PxScene* scene, PxPhysics* pxphy_, bool dyn, int type);
 	~Particle();
 	void integrate(float t);
 	void update(float t);
@@ -58,5 +59,7 @@ protected:
 	PxTransform* transform;
 
 	RenderItem* rItem;
+	PxRigidDynamic* din = nullptr;
+	PxRigidStatic* sta = nullptr;
 };
 

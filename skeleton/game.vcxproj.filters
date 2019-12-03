@@ -28,7 +28,7 @@
     <ClCompile Include="ParticleCable.cpp" />
     <ClCompile Include="ParticleRod.cpp" />
     <ClCompile Include="ParticleContactManager.cpp" />
-    <ClCompile Include="PhysxParticleGenerator.cpp" />
+    <ClCompile Include="PxGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -58,7 +58,7 @@
     <ClInclude Include="ParticleCable.h" />
     <ClInclude Include="ParticleRod.h" />
     <ClInclude Include="ParticleContactManager.h" />
-    <ClInclude Include="PhysxParticleGenerator.h" />
+    <ClInclude Include="PxGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
