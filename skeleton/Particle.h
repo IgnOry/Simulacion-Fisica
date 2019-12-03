@@ -2,13 +2,14 @@
 
 #include "RenderUtils.hpp"
 #include <PxPhysicsAPI.h>
+#include "PxRigidDynamic.h"
 
 using namespace physx;
 
 class Particle
 {
 public:
-	Particle(float radius = 1.0f, Vector4 c = Vector4(0.5, 0.5, 0.5, 1), Vector3 pos = Vector3(0.0f, 0.0f, 0.0f), float time = 1.0f, int count_ = 50, int repeat_ = 0, int type = 0);
+	Particle(float radius = 1.0f, Vector4 c = Vector4(0.5, 0.5, 0.5, 1), Vector3 pos = Vector3(0.0f, 0.0f, 0.0f), float time = 1.0f, int count_ = 50, int repeat_ = 0, int type = 0, PxRigidDynamic* rigidD = nullptr, PxRigidStatic* rigidS = nullptr, PxTransform* transform_ = nullptr);
 	~Particle();
 	void integrate(float t);
 	void update(float t);
@@ -38,6 +39,8 @@ public:
 	int getRepeat();
 	bool hasInfiniteMass();
 	float getMass();
+	PxRigidDynamic* getDynamic();
+	PxRigidStatic* getStatic();
 	Vector3 force;
 
 protected:
@@ -56,7 +59,8 @@ protected:
 	Vector4 color;
 
 	PxTransform* transform;
-
+	PxRigidDynamic* physxItemDynamic = nullptr;
+	PxRigidStatic* physxItemStatic = nullptr;
 	RenderItem* rItem;
 };
 

@@ -78,30 +78,16 @@ void initPhysics(bool interactive)
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
+	//
+	sceneDesc.gravity = Vector3(0, -5, 0);
+	//
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
-	barra = new ParticleRod();
-	cable = new ParticleCable();
-	contact = new ParticleContact();
-	contact2 = new ParticleContact();
-	contactManager = new ParticleContactManager();
+	PxTransform transform = PxTransform(Vector3(0, 0, 0));
+	PxRigidStatic* staticRigid = gPhysics->createRigidStatic(transform);
 
-	p1 = new Particle(1.0, Vector4(1.0, 0.0, 0.0, 1.0), Vector3(5.0, 0.0, 0.0));
-	p2 = new Particle(1.0, Vector4(0.0, 0.0, 1.0, 1.0), Vector3(5.0, 0.0, 5.0));
-
-	barra->particle[0] = p1;
-	barra->particle[1] = p2;
-	barra->length = 5;
-
-
-	p3 = new Particle(1.0, Vector4(0.0, 0.0, 0.0, 1.0), Vector3(5.0, 3.0, 0.0));
-	p4 = new Particle(1.0, Vector4(1.0, 1.0, 1.0, 1.0), Vector3(5.0, 3.0, 5.0));
-	
-	cable->particle[0] = p3;
-	cable->particle[1] = p4;
-	cable->maxLength = 5;
-	cable->restitution = 0;
+	p1 = new Particle(1.0, Vector4(1, 1, 1, 1), Vector3(0, 0, 0), 1.0, 0, 0, 1, nullptr, staticRigid, &transform);
 }
 
 
@@ -159,19 +145,7 @@ void stepPhysics(bool interactive, double t)
 			auxF++;
 	}
 
-	if (barra->addContact(contact))
-		contactManager->addContact(contact);
-
-	if (cable->addContact(contact2))
-		contactManager->addContact(contact2);
-
-	contactManager->update(t);
-
-	p1->update(t);
-	p2->update(t);
-	p3->update(t);
-	p4->update(t);
-
+	
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
