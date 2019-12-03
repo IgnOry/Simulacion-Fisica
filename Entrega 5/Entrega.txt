@@ -1,0 +1,7 @@
+Se utiliza la misma escena para mostrar ambas prácticas. La primera con partículas roja y azul, y la segunda con partículas blanca y negra.
+Se utilizan V (para dar velocidad a la particula roja) y B (para detenerla) para controlar la primera práctica, y H y J (aplicadas a la negra) para la segunda.
+
+Se mantiene la estructura dada en clase prácticamente al completo, completada con el libro "Game Physics Engine Development" de Ian Millington, a excepción de ParticleContactResolver, que se sustituye por un ParticleContactManager que, con una cola para 
+almacenar los contactos, va llamando al resolve().
+
+En init se crean tanto el cable como la barra, y se actualizan si procede en stepPhysics. No hay gestión de memoria adicional, al haber solo 4 partículas y 2 representaciones de las mismas.

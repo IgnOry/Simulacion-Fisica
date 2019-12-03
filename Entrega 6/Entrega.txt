@@ -1,0 +1,4 @@
+Se crea una nueva versión del generador de partículas, PxGenerator, que tiene 50 partículas como limite y crea 1 por segundo, usando una nueva constructora de Particle
+para utilizar el sistema de RigidBodys.
+
+Se añade al generador nuevo el sistema de explosiones, con el que se añaden fuerzas a la particula en funcion de la posicion, usando RigidBodys.
