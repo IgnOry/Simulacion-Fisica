@@ -1,29 +1,15 @@
 #include "Particle.h"
 
-Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int repeat_, int type, PxRigidDynamic* rigidD, PxRigidStatic* rigidS, PxTransform* transform_)
+Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int repeat_, int type)
 {
-	if (transform_ == nullptr)
-	{
-		position = pos;
-		transform = new PxTransform(position);
-	}
-	else
-		transform = transform_;
-
+	position = pos;
+	transform = new PxTransform(position);
 	radius = r;
 	color = c;
-	
-	if (rigidD == nullptr && rigidS == nullptr)
-	{
-		if (type == 0)
-			rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
-		else if (type == 1)
-			rItem = new RenderItem(CreateShape(PxBoxGeometry(radius, radius, radius)), transform, color);
-	}
-	else if (rigidD != nullptr)
-		physxItemDynamic = rigidD;
-	else if (rigidS != nullptr)
-		physxItemStatic = rigidS;
+	if (type == 0)
+		rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
+	else if (type == 1)
+		rItem = new RenderItem(CreateShape(PxBoxGeometry(radius, radius, radius)), transform, color);
 	lifeTime = time;
 	count = count_;
 	repeat = repeat_;
@@ -31,30 +17,12 @@ Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int 
 	setDirVel(Vector3(0, 0, 0), Vector3(0, 0, 0));
 	setMass(1.0);
 	setDamping(1.0);
-
-	if (physxItemDynamic != nullptr || physxItemStatic != nullptr)
-	{
-		if (physxItemDynamic != nullptr && type == 0)
-			rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), physxItemDynamic, color);
-		else if (physxItemDynamic != nullptr && type == 1)
-			rItem = new RenderItem(CreateShape(PxBoxGeometry(radius, radius, radius)), physxItemDynamic, color);
-		else if (physxItemStatic != nullptr && type == 0)
-			rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), physxItemStatic, color);
-		else if (physxItemStatic != nullptr && type == 1)
-			rItem = new RenderItem(CreateShape(PxBoxGeometry(radius, radius, radius)), physxItemStatic, color);
-	}
 }
 
 Particle::~Particle()
 {
 	delete transform;
 	rItem->release();
-
-	if (physxItemStatic != nullptr)
-		physxItemStatic->release();
-
-	if (physxItemDynamic != nullptr)
-		physxItemDynamic->release();
 }
 
 void Particle::setDirVel(Vector3 acc, Vector3 vel)
@@ -188,17 +156,6 @@ bool Particle::hasInfiniteMass()
 float Particle::getMass()
 {
 	return 1.0 / inverseMass;
-}
-
-PxRigidDynamic* Particle::getDynamic()
-{
-	return physxItemDynamic;
-	;
-}
-
-PxRigidStatic* Particle::getStatic()
-{
-	return physxItemStatic;
 }
 
 void Particle::setPosition(Vector3 position_)
