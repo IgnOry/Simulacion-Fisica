@@ -22,6 +22,18 @@
 #include "PxGenerator.h"
 #include <iostream>
 
+///////////////////////////////////////////////
+#include <SDL.h>
+#include "Resources.h"
+#include "SDLTexturesManager.h"
+#include "SDLAudioManager.h"
+#include "SDLFontsManager.h"
+#include "ServiceLocator.h"
+#include "SRandBasedGenerator.h"
+#include "sdl_includes.h"
+
+#undef main
+
 using namespace physx;
 
 PxDefaultAllocator		gAllocator;
@@ -56,8 +68,18 @@ Particle* p2;
 Particle* p3;
 Particle* p4;
 int fireworkModes = 1;
-int count = 3;
+int counter = 3;
 float g = 1.0;
+
+/////////////////////////
+ServiceLocator services_; // (textures, font, music, etc)
+SDLFontsManager fonts_;
+SDLTexturesManager textures_;
+SDLAudioManager audio_;
+SRandBasedGenerator random_;
+
+SDL_Window* window_; // the window
+SDL_Renderer* renderer_;  // the renderer
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -180,7 +202,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		//case ' ':	break;
 	case 'F':
 	{
-		Firework* f = new Firework(0.05f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), 0, fireworkModes, count, Vector3(0, -g, 0));
+		Firework* f = new Firework(0.05f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), 0, fireworkModes, counter, Vector3(0, -g, 0));
 		fireworksVec.push_back(f);
 	}
 	break;
@@ -226,12 +248,12 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	break;
 	case 'C':
 	{
-		if (count < 15)
-			count++;
+		if (counter < 15)
+			counter++;
 		else
-			count = 3;
+			counter = 3;
 
-		std::cout << "Particulas: " << count << std::endl;
+		std::cout << "Particulas: " << counter << std::endl;
 	}
 	case '+':
 	{
@@ -280,9 +302,49 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 	PX_UNUSED(actor2);
 }
 
+void initResources() {
+
+	fonts_.init();
+	textures_.init();
+	audio_.init();
+
+	services_.setTextures(&textures_);
+	services_.setAudios(&audio_);
+	services_.setFonts(&fonts_);
+	services_.setRandomGenerator(&random_);
+
+	for (auto& image : Resources::specialImages_) {
+		textures_.loadFromImg(image.id, renderer_, image.fileName, image.width, image.height, image.columns, image.rows, image.frameTotal);
+	}
+
+	for (auto& image : Resources::images_) {
+		textures_.loadFromImg(image.id, renderer_, image.fileName, image.width, image.height, image.columns, image.rows, image.frameTotal);
+	}
+
+	for (auto& font : Resources::fonts_) {
+		fonts_.loadFont(font.id, font.fileName, font.size);
+	}
+
+	for (auto& txtmsg : Resources::messages_) {
+		textures_.loadFromText(txtmsg.id, renderer_, txtmsg.msg,
+			fonts_[txtmsg.fontId], txtmsg.color);
+	}
+
+	for (auto& sound : Resources::sounds_) {
+		audio_.loadSound(sound.id, sound.fileName);
+	}
+
+	for (auto& music : Resources::musics_) {
+		audio_.loadSound(music.id, music.fileName);
+	}
+
+}
 
 int main(int, const char* const*)
 {
+	SDL_Init(SDL_INIT_EVERYTHING);
+	initResources();
+
 #ifndef OFFLINE_EXECUTION 
 	extern void renderLoop();
 	renderLoop();
