@@ -2,6 +2,7 @@
 #include "Particle.h"
 #include "ParticleForceRegistry.h"
 #include "ExplosionGenerator.h"
+#include <iostream>
 
 class PxGenerator: public Particle
 {
@@ -9,7 +10,7 @@ public:
 	PxGenerator(Vector3 pos, PxScene* PhysxScene, PxPhysics* pxPhy); //Si no se especifica, la direccion del viento es 0
 	~PxGenerator();
 	void update(float time);
-	void createParticle(float time);
+	void createParticle();
 
 	float spawnRateTime;
 	float time_;
@@ -18,7 +19,6 @@ public:
 
 	std::vector<Particle*> particlesVec;
 	ParticleForceRegistry* forcesRegistry;
-	ExplosionGenerator* expl;
 
 	int limit = 50;
 

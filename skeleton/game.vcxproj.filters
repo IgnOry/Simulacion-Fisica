@@ -80,16 +80,7 @@
     <ClCompile Include="AudioManager.cpp">
       <Filter>_SDL\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="FontsManager.cpp">
-      <Filter>_SDL\Sources</Filter>
-    </ClCompile>
     <ClCompile Include="RandomNumberGenerator.cpp">
-      <Filter>_SDL\Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="SDLFontsManager.cpp">
-      <Filter>_SDL\Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="SDLTexturesManager.cpp">
       <Filter>_SDL\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ServiceLocator.cpp">
@@ -98,15 +89,20 @@
     <ClCompile Include="SRandBasedGenerator.cpp">
       <Filter>_SDL\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="TexturesManager.cpp">
-      <Filter>_SDL\Sources</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>FinalGame\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>_SDL\Sources</Filter>
+    <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="AttachForceGenerator.cpp">
+      <Filter>FinalGame\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>_SDL\Sources</Filter>
+    <ClCompile Include="Star.cpp">
+      <Filter>FinalGame\Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Planet.cpp">
+      <Filter>FinalGame\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FuelBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render\Camera.h">
@@ -181,13 +177,7 @@
     <ClInclude Include="RenderUtils.hpp">
       <Filter>_Base</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h">
-      <Filter>_SDL\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="AudioManager.h">
-      <Filter>_SDL\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="FontsManager.h">
       <Filter>_SDL\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Resources.h">
@@ -199,27 +189,29 @@
     <ClInclude Include="SDLAudioManager.h">
       <Filter>_SDL\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="SDLTexturesManager.h">
-      <Filter>_SDL\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="SDLFontsManager.h">
-      <Filter>_SDL\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="ServiceLocator.h">
       <Filter>_SDL\Headers</Filter>
     </ClInclude>
     <ClInclude Include="SRandBasedGenerator.h">
       <Filter>_SDL\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>_SDL\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="TexturesManager.h">
-      <Filter>_SDL\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="sdl_includes.h">
       <Filter>_SDL\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>FinalGame\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="AttachForceGenerator.h">
+      <Filter>FinalGame\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Star.h">
+      <Filter>FinalGame\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Planet.h">
+      <Filter>FinalGame\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="FuelBox.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -242,6 +234,15 @@
     </Filter>
     <Filter Include="_SDL\Sources">
       <UniqueIdentifier>{21cb373e-cdf6-4a1a-a2ce-7c7b2d49af7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FinalGame">
+      <UniqueIdentifier>{dc05b3c7-7da9-4a10-8f6b-760e9be8cd82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FinalGame\Headers">
+      <UniqueIdentifier>{3ec24994-bf92-42b7-98fe-6621ce1f8a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FinalGame\Sources">
+      <UniqueIdentifier>{ce9b2929-59d0-49c9-8468-6000c62934e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

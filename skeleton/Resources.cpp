@@ -16,7 +16,7 @@ vector<Resources::TextMsgInfo> Resources::messages_{
 };
 
 vector<Resources::MusicInfo> Resources::musics_{
-	
+	{Laser , "resources/sound/Laser.mp3"},
 };
 
 vector<Resources::SoundInfo> Resources::sounds_{

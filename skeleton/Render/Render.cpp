@@ -261,7 +261,7 @@ void setupDefaultWindow(const char *name)
 void setupDefaultRenderState()
 {
 	// Setup default render states
-	glClearColor(0.3f, 0.4f, 0.5f, 1.0);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -351,6 +351,7 @@ void renderActors(PxRigidActor** actors, const PxU32 numActors, bool shadows, co
 			}
 			else
 				glColor4f(color.x, color.y, color.z, 1.0f);
+			
 			renderGeometry(h, color.w < 0.999f);
 			glPopMatrix();
 

@@ -211,8 +211,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
-    <IncludePath>C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2_mixer-2.0.2\include;C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2_image-2.0.1\include;C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2_ttf-2.0.14\include;C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2-2.0.10\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2_mixer-2.0.2\lib\x64;C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2_image-2.0.1\lib\x64;C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2_ttf-2.0.14\lib\x64;C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2-2.0.10\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2_mixer-2.0.2\include;C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2-2.0.10\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2_mixer-2.0.2\lib\x64;C:\Users\ignac\Documents\GitHub\Simulacion-Fisica\skeleton\SDL2-2.0.10\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <ClCompile>
@@ -236,7 +236,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/vc14win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PxTask_x64.lib PxFoundation_x64.lib PsFastXml_x64.lib PxPvdSDK_x64.lib /LIBPATH:../../lib/vc14win64 Utils.lib</AdditionalOptions>
-      <AdditionalDependencies>SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2.lib;SDL2main.lib;Winmm.lib;OpenGL32.lib;glut32.lib;PhysX3Common_x64.lib;PhysX3_x64.lib;PhysX3Cooking_x64.lib;PhysX3CharacterKinematic_x64.lib;PhysX3Extensions.lib;PxTask_x64.lib;PxFoundation_x64.lib;PsFastXml_x64.lib;PxPvdSDK_x64.lib;Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_mixer.lib;SDL2.lib;SDL2main.lib;Winmm.lib;OpenGL32.lib;glut32.lib;PhysX3Common_x64.lib;PhysX3_x64.lib;PhysX3Cooking_x64.lib;PhysX3CharacterKinematic_x64.lib;PhysX3Extensions.lib;PxTask_x64.lib;PxFoundation_x64.lib;PsFastXml_x64.lib;PxPvdSDK_x64.lib;Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(PHYSXPATH)/PhysX_3.4/Common/lib/vc14win64;../common/lib/vc14win64;$(PHYSXPATH)/PxShared/lib/vc14win64;../common/Graphics/lib/win64/glut;$(PHYSXPATH)/PhysX_3.4/Lib/vc14win64;../common/PhysX-3.4/PhysX_3.4/Lib/vc14win64;../common/PhysX-3.4/PxShared/lib/vc14win64;../common/PhysX-3.4/PhysX_3.4/Common/lib/vc14win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(TargetDir)\$(TargetName).pdb</ProgramDatabaseFile>
@@ -255,12 +255,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="ExplosionGenerator.cpp" />
     <ClCompile Include="Firework.cpp" />
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FontsManager.cpp" />
+    <ClCompile Include="FuelBox.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleAnchoredSpring.cpp" />
@@ -277,6 +277,10 @@
     <ClCompile Include="ParticleLink.cpp" />
     <ClCompile Include="ParticleRod.cpp" />
     <ClCompile Include="ParticleSpring.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="Star.cpp" />
+    <ClCompile Include="AttachForceGenerator.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PxGenerator.cpp" />
     <ClCompile Include="RandomNumberGenerator.cpp" />
     <ClCompile Include="RenderUtils.cpp" />
@@ -284,22 +288,18 @@
     <ClCompile Include="Render\Render.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="SDLAudioManager.cpp" />
-    <ClCompile Include="SDLFontsManager.cpp" />
-    <ClCompile Include="SDLTexturesManager.cpp" />
     <ClCompile Include="ServiceLocator.cpp" />
     <ClCompile Include="SRandBasedGenerator.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TexturesManager.cpp" />
     <ClCompile Include="WindGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Asteroid.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="ExplosionGenerator.h" />
     <ClInclude Include="Firework.h" />
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="FontsManager.h" />
+    <ClInclude Include="FuelBox.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleAnchoredSpring.h" />
     <ClInclude Include="ParticleBungie.h" />
@@ -315,6 +315,10 @@
     <ClInclude Include="ParticleLink.h" />
     <ClInclude Include="ParticleRod.h" />
     <ClInclude Include="ParticleSpring.h" />
+    <ClInclude Include="Planet.h" />
+    <ClInclude Include="Star.h" />
+    <ClInclude Include="AttachForceGenerator.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PxGenerator.h" />
     <ClInclude Include="RandomNumberGenerator.h" />
     <ClInclude Include="RenderUtils.hpp" />
@@ -322,13 +326,9 @@
     <ClInclude Include="Render\Render.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="SDLAudioManager.h" />
-    <ClInclude Include="SDLFontsManager.h" />
-    <ClInclude Include="SDLTexturesManager.h" />
     <ClInclude Include="sdl_includes.h" />
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SRandBasedGenerator.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TexturesManager.h" />
     <ClInclude Include="WindGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

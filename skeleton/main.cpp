@@ -25,14 +25,20 @@
 ///////////////////////////////////////////////
 #include <SDL.h>
 #include "Resources.h"
-#include "SDLTexturesManager.h"
 #include "SDLAudioManager.h"
-#include "SDLFontsManager.h"
 #include "ServiceLocator.h"
 #include "SRandBasedGenerator.h"
 #include "sdl_includes.h"
 
 #undef main
+
+///////////////////////////////////////////////
+
+#include "Player.h"
+#include "Star.h"
+#include "Asteroid.h"
+#include "Planet.h"
+#include "FuelBox.h"
 
 using namespace physx;
 
@@ -56,30 +62,41 @@ std::vector<Particle*> particlesVec;
 std::vector<Firework*> fireworksVec;
 
 ParticleContactManager* contactManager;
-ParticleRod* barra;
-ParticleCable* cable;
+ParticleCable* barra;
 ParticleContact* contact;
-ParticleContact* contact2;
 
 PxGenerator* gene;
 
 Particle* p1;
 Particle* p2;
-Particle* p3;
-Particle* p4;
+
 int fireworkModes = 1;
 int counter = 3;
 float g = 1.0;
+bool running;
 
+/////////////////////
+Player* falcon;
+physx::PxRigidDynamic* movingCamera = nullptr;
+Vector3 c;
+Vector3 p;
+Planet* pl;
+
+///////////////////////////////////////////////////////
+//Vectores de partículas, de forma directa o indirecta
+std::vector<Particle*> particles; //Vector con todas
+std::vector<Star*> stars;
+std::vector<Asteroid*> asteroids;
+std::vector<Planet*> planets;
+std::vector<PxGenerator*> pxGens;
+std::vector<FuelBox*> fuel;
+std::vector<ParticleContact*> contacts;
 /////////////////////////
 ServiceLocator services_; // (textures, font, music, etc)
-SDLFontsManager fonts_;
-SDLTexturesManager textures_;
 SDLAudioManager audio_;
 SRandBasedGenerator random_;
 
-SDL_Window* window_; // the window
-SDL_Renderer* renderer_;  // the renderer
+//////////////////////////////////////////////////////////////////////////////////////
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -106,9 +123,139 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
-	gene = new PxGenerator(Vector3(5, 5, 5), gScene, gPhysics);
+	/*falcon = new Player(GetCamera());
+	p1 = new Particle(50, Vector3(0, -10, 0), Vector4(1, 1, 1, 1), gScene, gPhysics, false, 1);
+	p2 = new Particle(1, Vector4(1, 1, 1, 1), Vector3(-15, 0, 0), 0, 0, 0, 1);
 
-	p1 = new Particle(50, Vector3(0, 0, 0), gScene, gPhysics, false, 1);
+	barra = new ParticleCable();
+	contact = new ParticleContact();*/
+	contactManager = new ParticleContactManager();
+
+	/*barra->particle[0] = falcon->getParticle();
+	barra->particle[1] = p2;
+	barra->maxLength = 15;
+	barra->restitution = 0;*/
+
+	//movingCamera = gPhysics->createRigidDynamic(GetCamera()->getTransform());
+	//movingCamera->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	//gScene->addActor(*movingCamera);
+
+	pl = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(20, 0, 0), 3);
+
+	//FuelBox* f = new FuelBox(0.5, Vector3(5, 5, 5));
+	//particles.push_back(pl->getPart());
+	planets.push_back(pl);
+
+	c = GetCamera()->getDir();
+	p = GetCamera()->getEye();
+}
+
+void collisionSystem()
+{
+	//Nave con cosas
+	/*
+	
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	Nave con objetivo
+
+	Nave con planetas
+	Nave con asteroides
+	Nave con estrellas
+	Nave con Combustible
+	
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	Carga con planetas
+	Carga con asteroides
+	Carga con estrellas
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	
+	Disparos con estrellas
+	Disparos con planetas
+	Disparos con asteroides
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	
+	Asteroides con planetas
+	Asteroides con estrellas
+
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	Planetas con estrellas
+
+
+	*/
+	
+	//Disparos con asteroides
+	falcon->getMunicion();
+
+	stars;
+	asteroids;
+	//Asteroides con planetas
+}
+
+void detectCollisions(Particle* p1, Particle* p2, int type)
+{
+		Vector3 distance = p2->getPosition() - p1->getPosition();
+
+		float d = distance.magnitude();
+
+		float sumaRadio = p1->getRadio() + p2->getRadio();
+
+		if (d < sumaRadio)
+		{
+			switch (type)
+			{
+				case 0: //Colision normal
+				{
+					ParticleContact* cont = new ParticleContact();
+
+					distance.normalize();
+
+					cont->particle[0] = p2;
+					cont->particle[1] = p1;
+					cont->contactNormal = distance;
+					cont->penetration = (sumaRadio - d);
+					cont->restitution = 1;
+
+					contactManager->addContact(cont);
+					break;
+				}
+				case 1: //Player/Carga con cosa -> El primero pierde salud
+				{
+					break;
+				}
+				case 2: //Disparo con planetas -> El primero se destruye, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
+				{
+					break;
+				}
+				case 3: //Disparo con asteroides -> El primero se destruye, el segundo se deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño
+
+				{
+					break;
+				}
+				case 4: //Disparo con estrellas -> El primero se destruye, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
+				{
+					break;
+				}
+				case 5: //Asteroides con planetas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
+				{
+					break;
+				}
+				case 6: //Asteroides con estrellas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
+				{
+					break;
+				}
+				case 7: //Planetas con estrellas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
+				{
+					break;
+				}
+				default:
+					break;
+			}
+		}
 }
 
 
@@ -119,57 +266,102 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 
-	auto auxP = particlesVec.begin();
+	auto auxP = particles.begin();
 
-	while (!particlesVec.empty() && auxP != particlesVec.end()) {
+	while (!particles.empty() && auxP != particles.end()) {
 		Particle* p = (*auxP);
 
-		p->update(t);
+		if (p != nullptr)
+		{
 
-		if (p->deathTime(t)) {
-			particlesVec.erase(particlesVec.begin());
-			delete p;
-			auxP = particlesVec.begin();
+			pl->getAttach()->updateForce(p, t);
+
+			p->update(t);
+
+			if (p->deathTime(t)) {
+				particles.erase(particles.begin());
+				delete p;
+				auxP = particles.begin();
+
+			}
+
+			else if (!particles.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				auxP++;
 		}
-
-		else if (!particlesVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-			auxP++;
 	}
 
-	auto auxG = generatorsVec.begin();
-	while (!generatorsVec.empty() && auxG != generatorsVec.end()) {
-		ParticleGenerator* p = (*auxG);
+	auto gens = pxGens.begin();
+	while (!pxGens.empty() && gens != pxGens.end()) {
+		PxGenerator* px = (*gens);
 
-		p->update(t);
+		if (px != nullptr)
+		{
+			px->update(t);
 
-		if (p->deathTime(t)) {
-			generatorsVec.erase(generatorsVec.begin());
-			delete p;
-			auxG = generatorsVec.begin();
+			if (px->deathTime(t)) {
+				pxGens.erase(pxGens.begin());
+				delete px;
+				gens = pxGens.begin();
+			}
+
+			else if (!pxGens.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				gens++;
 		}
-
-		else if (!generatorsVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-			auxG++;
 	}
 
-	auto auxF = fireworksVec.begin();
-	while (!fireworksVec.empty() && auxF != fireworksVec.end()) {
-		Firework* f = (*auxF);
+	auto st = stars.begin();
+	while (!stars.empty() && st != stars.end()) {
+		Star* star = (*st);
 
-		if (f != nullptr && f->update(t)) {
-			fireworksVec.erase(fireworksVec.begin());
-			delete f;
-			auxF = fireworksVec.begin();
+		if (star != nullptr)
+		{
+			star->update(t);
+
+			if (star->getPart()->deathTime(t)) {
+
+				pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+
+				stars.erase(stars.begin());
+				delete star;
+				st = stars.begin();
+			}
+
+			else if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				st++;
 		}
-
-		else if (!fireworksVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-			auxF++;
 	}
 
-	gene->update(t);
+	auto pla = planets.begin();
+	while (!planets.empty() && pla != planets.end()) {
+		Planet* planet = (*pla);
+
+		if (planet != nullptr)
+		{
+			planet->update(t);
+
+			/*if (planet->getPart()->deathTime(t)) {		//Estos no se destruyen por tiempo
+				planets.erase(planets.begin());
+				delete planet;
+				pla = planets.begin();
+			}*/
+
+			if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				pla++;
+		}
+	}
+
+	//detectCollisions();
+	//contactManager->update(t);
+
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
+
+	//movingCamera->setGlobalPose(PxTransform(falcon->getParticle()->getPosition().x - 50, falcon->getParticle()->getPosition().y, falcon->getParticle()->getPosition().z));
+	//GetCamera()->setEye(movingCamera->getGlobalPose().p);
+
+	/////////////////////////////////////////////////////////////////////////
+
 }
 
 // Function to clean data
@@ -198,99 +390,154 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 	switch (toupper(key))
 	{
-		//case 'B': break;
-		//case ' ':	break;
-	case 'F':
-	{
-		Firework* f = new Firework(0.05f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), 0, fireworkModes, counter, Vector3(0, -g, 0));
-		fireworksVec.push_back(f);
-	}
-	break;
-	case 'G':
-	{
-		ParticleGenerator* gen = new ParticleGenerator(Vector3(0.0f, 0.0f, 0.0f), 0.01f, 5.0f, Vector3(0.0, -g, 0.0), Vector3(1.0, 0.0, 0.0));
-		generatorsVec.push_back(gen);
-	}
-	break;
+
 	case 'P':
 	{
-		if (particlesVec.size() == 10)
+		Particle* p = new Particle(0.1, Vector4(0.0, 1.0, 0.0, 1.0), GetCamera()->getTransform().p, 15.0f);
+		p->setDirVel(Vector3(0.0, 0.0, 0.0), GetCamera()->getDir() * 15);
+		particles.push_back(p);
+		break;
+	}
+
+	/*case 'W':
+	{
+		falcon->handleEvent(key);
+		//movingCamera->setLinearVelocity(Vector3(50, 0, 0));
+		break;
+	}
+	case 'A':
+	{
+		falcon->handleEvent(key);
+		//movingCamera->setLinearVelocity(Vector3(0, 0, -50));
+		break;
+	}
+	case 'S':
+	{
+		falcon->handleEvent(key);
+		//movingCamera->setLinearVelocity(Vector3(-50, 0, 0));
+
+		break;
+	}
+	/*case 'D':
+	{
+		falcon->handleEvent(key);
+		//movingCamera->setLinearVelocity(Vector3(0, 0, 50));
+
+		break;
+	}
+	case 'X':
+	{
+		falcon->handleEvent(key);
+		//movingCamera->setLinearVelocity(Vector3(0, 0, 0));
+
+		break;
+	}
+
+	case ' ':
+	{
+		if (falcon->shoot())
+			services_.getAudios()->playChannel(Resources::Laser, 0);
+		//movingCamera->setLinearVelocity(Vector3(0, 0, 0));
+
+		break;
+	}*/
+
+	////////////////////////////////////////////////////////////
+
+	case 'E':
+	{
+		if (p.x < 30.0f)
 		{
-			Particle* aux = *particlesVec.begin();
-			particlesVec.erase(particlesVec.begin());
-			delete aux;
+			p.x = p.x + 1;
+			cout << p.x << endl;
 		}
-		Particle* p = new Particle(1, Vector4(0.0, 1.0, 0.0, 1.0), GetCamera()->getTransform().p, 5.0f);
-		p->setDirVel(Vector3(0.0, 0.0, 0.0), GetCamera()->getDir());
-		particlesVec.push_back(p);
-	}
-	break;
-	case 'M':
-	{
-		if (fireworkModes < 3)
-			fireworkModes++;
-		else
-			fireworkModes = 1;
+		GetCamera()->setEye(p);
 
-		switch (fireworkModes) {
-		case 1:
-			text = "Fuegos artificales";
-			break;
-		case 2:
-			text = "Hacia arriba";
-			break;
-		case 3:
-			text = "Generador de particulas (Practica 1)";
-			break;
+		break;
+	}
+	case 'Q':
+	{
+		if (p.x > -30.0f)
+		{
+			p.x = p.x - 1;
+			cout << p.x << endl;
 		}
-		std::cout << "Modo: " << text << std::endl;
-	}
-	break;
-	case 'C':
-	{
-		if (counter < 15)
-			counter++;
-		else
-			counter = 3;
+		GetCamera()->setEye(p);
 
-		std::cout << "Particulas: " << counter << std::endl;
+		break;
 	}
+
+	case 'R':
+	{
+		c.z = 0;
+		p.x = 0;
+		c.y = 0;
+
+		GetCamera()->setEye(p);
+		GetCamera()->setDir(c);
+
+		break;
+	}
+
+	////////////////////////////////////////////////////////////
+	case 'D':
+	{
+		if (c.z < 1.0f)
+		{
+			c.z = c.z + 0.1f;
+			cout << c.z << endl;
+		}
+		GetCamera()->setDir(c);
+
+		break;
+	}
+	case 'A':
+	{
+		if (c.z > -1.0f)
+		{
+			c.z = c.z - 0.1f;
+			cout << c.z << endl;
+		}
+		GetCamera()->setDir(c);
+
+		break;
+	}
+	////////////////////////////////////////////////////////////
+	case 'I':
+	{
+		if (c.y < 1.0)
+		{
+			c.y = c.y + 0.1;
+			cout << c.y << endl;
+		}
+
+		GetCamera()->setDir(c);
+
+		break;
+	}
+	case 'K':
+	{
+		if (c.y > -1.0)
+		{
+			c.y = c.y - 0.1;
+			cout << c.y << endl;
+		}
+
+		GetCamera()->setDir(c);
+
+		break;
+	}
+	////////////////////////////////////////////////////////////
+
+
 	case '+':
 	{
-		g += 0.5;
-		std::cout << "Gravedad: " << g << std::endl;
+		break;
 	}
-	break;
 	case '-':
 	{
-		g -= 0.5;
-		std::cout << "Gravedad: " << g << std::endl;
+		break;
 	}
-	break;
-
-	/*case 'V':
-	{
-		p1->setVelocity(Vector3(1.0, 0.0, 0.0));
-
-	}
-	break;
-
-	case 'B':
-	{
-		p1->setVelocity(Vector3(0.0, 0.0, 0.0));
-	}
-	break;
-	case 'H':
-	{
-		p3->setVelocity(Vector3(1.0, 0.0, 0.0));
-	}
-	break;
-	case 'J':
-	{
-		p3->setVelocity(Vector3(0.0, 0.0, 0.0));
-	}
-	break;*/
-
 	default:
 		break;
 	}
@@ -304,31 +551,10 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 
 void initResources() {
 
-	fonts_.init();
-	textures_.init();
 	audio_.init();
 
-	services_.setTextures(&textures_);
 	services_.setAudios(&audio_);
-	services_.setFonts(&fonts_);
 	services_.setRandomGenerator(&random_);
-
-	for (auto& image : Resources::specialImages_) {
-		textures_.loadFromImg(image.id, renderer_, image.fileName, image.width, image.height, image.columns, image.rows, image.frameTotal);
-	}
-
-	for (auto& image : Resources::images_) {
-		textures_.loadFromImg(image.id, renderer_, image.fileName, image.width, image.height, image.columns, image.rows, image.frameTotal);
-	}
-
-	for (auto& font : Resources::fonts_) {
-		fonts_.loadFont(font.id, font.fileName, font.size);
-	}
-
-	for (auto& txtmsg : Resources::messages_) {
-		textures_.loadFromText(txtmsg.id, renderer_, txtmsg.msg,
-			fonts_[txtmsg.fontId], txtmsg.color);
-	}
 
 	for (auto& sound : Resources::sounds_) {
 		audio_.loadSound(sound.id, sound.fileName);
@@ -346,15 +572,14 @@ int main(int, const char* const*)
 	initResources();
 
 #ifndef OFFLINE_EXECUTION 
-	extern void renderLoop();
-	renderLoop();
+		extern void renderLoop();
+		renderLoop();
 #else
-	static const PxU32 frameCount = 100;
-	initPhysics(false);
-	for (PxU32 i = 0; i < frameCount; i++)
-		stepPhysics(false);
-	cleanupPhysics(false);
+		static const PxU32 frameCount = 100;
+		initPhysics(false);
+		for (PxU32 i = 0; i < frameCount; i++)
+			stepPhysics(false);
+		cleanupPhysics(false);
 #endif
-
 	return 0;
 }

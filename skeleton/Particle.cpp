@@ -9,7 +9,9 @@ Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int 
 	if (type == 0)
 		rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
 	else if (type == 1)
-		rItem = new RenderItem(CreateShape(PxBoxGeometry(radius, radius, radius)), transform, color);
+		rItem = new RenderItem(CreateShape(PxBoxGeometry(radius, radius * 2, radius)), transform, color);
+	else if (type == 2)
+		rItem = new RenderItem(CreateShape(PxCapsuleGeometry(1, 1)), transform, color);
 	lifeTime = time;
 	count = count_;
 	repeat = repeat_;
@@ -19,20 +21,24 @@ Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int 
 	setDamping(1.0);
 }
 
-Particle::Particle(float radius, Vector3 pos, PxScene* scene, PxPhysics* pxphy_, bool dyn, int type)
+Particle::Particle(float radius, Vector3 pos, Vector4 color, PxScene* scene_, PxPhysics* pxphy_, bool dyn, int type)
 {
 	PxShape* shape;
 	if (type == 0)
 		shape = CreateShape(PxSphereGeometry(radius));
 	else if (type == 1)
-		shape = CreateShape(PxBoxGeometry(radius, 1, radius));
+		shape = CreateShape(PxBoxGeometry(radius, radius * 2, radius));
+	else if (type == 2)
+	{
+		shape = CreateShape(PxCapsuleGeometry(5, 50));
 
+	}
 	PxTransform* tr = new PxTransform(pos);
 
 	if (dyn)
 	{
 		din = pxphy_->createRigidDynamic(*tr);
-		scene->addActor(*din);
+		scene_->addActor(*din);
 		din->attachShape(*shape);
 
 		PxRigidBodyExt::updateMassAndInertia(*din, 1);
@@ -47,19 +53,19 @@ Particle::Particle(float radius, Vector3 pos, PxScene* scene, PxPhysics* pxphy_,
 		setVelocity(vel);
 		din->setLinearVelocity(vel);
 
-		rItem = new RenderItem(shape, din, Vector4(1, 0, 0, 1));
+		rItem = new RenderItem(shape, din, color);
 	}
 
 	else
 	{ 
 		sta = pxphy_->createRigidStatic(*tr);
-		scene->addActor(*sta);
+		scene_->addActor(*sta);
 		sta->attachShape(*shape);
 
 
 		setMass(1.0);
 
-		rItem = new RenderItem(shape, sta, Vector4(1,1,1,1));
+		rItem = new RenderItem(shape, sta, color);
 	}
 }
 
@@ -80,19 +86,24 @@ void Particle::setRepeat(int repeat_)
 	repeat = repeat_;
 }
 
-void Particle::setRItem(int shape)
+void Particle::setRItem(int shape, Vector4 c_)
 {
 	//case 0, esfera
 	if (shape == 0)
 	{
 		rItem->release();
-		rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
+		rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, c_);
 	}
-	//case 1
+	//case 1, caja
 	else if (shape == 1)
 	{
 		rItem->release();
-		rItem = new RenderItem(CreateShape(PxBoxGeometry(1,1,1)), transform, Vector4(1.0, 0.9, 0, 1.0));
+		rItem = new RenderItem(CreateShape(PxBoxGeometry(1,1,1)), transform, c_);
+	}
+	//case 2, capsula
+	{
+		rItem->release();
+		rItem = new RenderItem(CreateShape(PxCapsuleGeometry(1, 1)), transform, c_);
 	}
 }
 
@@ -116,6 +127,11 @@ void Particle::PxClearForce()
 {
 	force = Vector3(0, 0, 0);
 	din->clearForce();
+}
+
+void Particle::setPlanet(bool value)
+{
+	planet = value;
 }
 
 void Particle::integrate(float t)
@@ -189,9 +205,19 @@ Vector3 Particle::getVelocity() const
 	return velocity;
 }
 
+Vector3 Particle::getAcceleration()
+{
+	return acceleration;
+}
+
 float Particle::getInverseMass()
 {
 	return inverseMass;
+}
+
+float Particle::getRadio()
+{
+	return radius;
 }
 
 int Particle::getCount()
@@ -212,6 +238,11 @@ bool Particle::hasInfiniteMass()
 float Particle::getMass()
 {
 	return 1.0 / inverseMass;
+}
+
+bool Particle::getPlanet()
+{
+	return planet;
 }
 
 PxRigidDynamic* Particle::getDin()

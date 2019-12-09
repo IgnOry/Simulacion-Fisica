@@ -1,41 +1,41 @@
 #include "PxGenerator.h"
 
-PxGenerator::PxGenerator(Vector3 pos, PxScene* PhysxScene, PxPhysics* pxPhy): Particle(1.0, Vector4(1,1,1,1), pos, 50)
+PxGenerator::PxGenerator(Vector3 pos, PxScene* PhysxScene, PxPhysics* pxPhy) : Particle(1.0, Vector4(1, 1, 1, 1), pos, 5)
 {
 	forcesRegistry = new ParticleForceRegistry();
-	expl = new ExplosionGenerator(Vector3(3, 20, 3), 10);
 	scene = PhysxScene;
 	PxSystem = pxPhy;
-	spawnRateTime = 1;
+	spawnRateTime = 0.05;
 	time_ = 0;
 }
 
 PxGenerator::~PxGenerator()
 {
+	/*auto auxP = particlesVec.begin();
+
+	while (!particlesVec.empty() && auxP != particlesVec.end()) {
+		Particle* p = (*auxP);
+
+		particlesVec.erase(particlesVec.begin());
+		delete p;
+		auxP = particlesVec.begin();
+		
+		if (!particlesVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+			auxP++;
+	}*/
 }
 
 void PxGenerator::update(float time)
 {
 	if (particlesVec.size() < limit && time_ > spawnRateTime)
-	createParticle(time);
-
-	auto it = particlesVec.begin();
-	while (!particlesVec.empty() && it != particlesVec.end())
-	{
-		Particle* p = (*it);
-
-		forcesRegistry->PxUpdateForces(time);
-
-		it++;
-	}
+		createParticle();
 
 	time_ += time;
 }
 
-void PxGenerator::createParticle(float time)
+void PxGenerator::createParticle()
 {
-	Particle* p = new Particle(0.5, position, scene, PxSystem, true, 0);
+	Particle* p = new Particle(1, position, Vector4(1.0, 1.0, 1.0, 1.0), scene, PxSystem, true, 0);
 	particlesVec.push_back(p);
-	forcesRegistry->add(p, expl);
 	time_ = 0;
 }

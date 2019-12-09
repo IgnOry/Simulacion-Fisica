@@ -10,9 +10,7 @@
 //
 #if defined(_WIN32) || defined(_WIN64) // Windows
 #include <SDL.h>
-#include <SDL_ttf.h>
 #include <SDL_mixer.h>
-#include <SDL_image.h>
 #elif defined(__APPLE__) && defined(__MACH__) // Apple OSX and iOS (Darwin)
 #include <SDL2/SDL.h>
 #include <SDL2_ttf/SDL_ttf.h>
