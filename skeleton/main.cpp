@@ -123,8 +123,8 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 	// ------------------------------------------------------
 
-	/*falcon = new Player(GetCamera());
-	p1 = new Particle(50, Vector3(0, -10, 0), Vector4(1, 1, 1, 1), gScene, gPhysics, false, 1);
+	falcon = new Player(GetCamera());
+	/*p1 = new Particle(50, Vector3(0, -10, 0), Vector4(1, 1, 1, 1), gScene, gPhysics, false, 1);
 	p2 = new Particle(1, Vector4(1, 1, 1, 1), Vector3(-15, 0, 0), 0, 0, 0, 1);
 
 	barra = new ParticleCable();
@@ -140,7 +140,7 @@ void initPhysics(bool interactive)
 	//movingCamera->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	//gScene->addActor(*movingCamera);
 
-	pl = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(20, 0, 0), 3);
+	pl = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(2, 0, 0));
 
 	//FuelBox* f = new FuelBox(0.5, Vector3(5, 5, 5));
 	//particles.push_back(pl->getPart());
@@ -157,46 +157,125 @@ void collisionSystem()
 	
 	//////////////////////////////////////////////////////////////////////////////////////
 
-	Nave con objetivo
+	//Nave con objetivo
 
-	Nave con planetas
-	Nave con asteroides
-	Nave con estrellas
-	Nave con Combustible
-	
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	Carga con planetas
-	Carga con asteroides
-	Carga con estrellas
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	
-	Disparos con estrellas
-	Disparos con planetas
-	Disparos con asteroides
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	
-	Asteroides con planetas
-	Asteroides con estrellas
+	if (detectCollisions(falcon.getPart(), target.getPart())
+	{
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////
 
-	Planetas con estrellas
+	//Nave/Carga con planetas, Nave con asteroides y Nave con estrellas
 
-
-	*/
-	
-	//Disparos con asteroides
-	falcon->getMunicion();
+	//recorrido de vectores de planetas, asteroides, estrellas
 
 	stars;
 	asteroids;
+
+	if (detectCollisions(falcon.getPart(), pla/ast/sta)
+	{
+
+	}
+
+	if (detectCollisions(load.getPart(), pla/ast/sta)
+	{
+
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	//Nave con Combustible
+	
+	//recorrido de vector de fuelbox
+
+	fuel;
+
+		if (detectCollisions(falcon.getPart(), fbox)
+	{
+
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	
+	//Disparos con estrellas
+
+	//Recorrido de vector de disparos
+	//Recorrido de vector de estrellas
+
+	falcon->getMunicion();
+	stars;
+
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	//Disparos con planetas
+
+	//Recorrido de vector de disparos
+	//Recorrido de vector de planetas
+
+	falcon->getMunicion();
+
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	//Disparos con asteroides
+
+	//Recorrido de vector de disparos
+	//Recorrido de vector de asteroides
+
+	falcon->getMunicion();
+	asteroids;
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	
 	//Asteroides con planetas
+
+	//Recorrido de vector de asteroides
+	//Recorrido de vector de planetas
+	
+	asteroids;
+
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	//Asteroides con estrellas
+
+	//Recorrido de vector de asteroides
+	//Recorrido de vector de estrellas
+
+	asteroids;
+	stars;
+
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	//Asteroides con asteroides
+
+	//Recorrido de vector de asteroides
+	//Recorrido de vector de asteroides
+	//Comprobar que no es el mismo asteroide
+
+	asteroids;
+
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	//Planetas con estrellas
+
+	//Recorrido de vector de planetas
+	//Recorrido de vector de estrellas
+
+	stars;
+
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	//Planetas con otros planetas
+
+	//Recorrido de vector de planetas
+	//Recorrido de vector de planetas
+	//Comprobar que no es el mismo planeta
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	*/
+	
 }
 
-void detectCollisions(Particle* p1, Particle* p2, int type)
+bool detectCollisions(Particle* p1, Particle* p2)
 {
 		Vector3 distance = p2->getPosition() - p1->getPosition();
 
@@ -206,11 +285,9 @@ void detectCollisions(Particle* p1, Particle* p2, int type)
 
 		if (d < sumaRadio)
 		{
-			switch (type)
-			{
-				case 0: //Colision normal
-				{
-					ParticleContact* cont = new ParticleContact();
+			return true;
+			/*
+			ParticleContact* cont = new ParticleContact();
 
 					distance.normalize();
 
@@ -221,41 +298,55 @@ void detectCollisions(Particle* p1, Particle* p2, int type)
 					cont->restitution = 1;
 
 					contactManager->addContact(cont);
+
+			switch (type)
+			{
+				case 0: //Nave con objetivo
+				{
 					break;
 				}
 				case 1: //Player/Carga con cosa -> El primero pierde salud
 				{
 					break;
 				}
-				case 2: //Disparo con planetas -> El primero se destruye, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
+				case 2: //Nave con combustible -> El primero gana fuel, el segundo se destruye
 				{
 					break;
 				}
-				case 3: //Disparo con asteroides -> El primero se destruye, el segundo se deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño
+				case 3: //Disparo con estrellas -> El primero se destruye, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
+				{
+					break;
+				}
+				case 4: //Disparo con planetas -> El primero se destruye, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
+				{
+					break;
+				}
+				case 5: //Disparo con asteroides -> El primero se destruye, el segundo se deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño
 
 				{
 					break;
 				}
-				case 4: //Disparo con estrellas -> El primero se destruye, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
+				case 6: //Asteroides con planetas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
 				{
 					break;
 				}
-				case 5: //Asteroides con planetas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
+				case 7: //Asteroides con estrellas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
 				{
 					break;
 				}
-				case 6: //Asteroides con estrellas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
+				case 8: //Planetas con estrellas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
 				{
 					break;
 				}
-				case 7: //Planetas con estrellas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
+				case 9: //Planetas con planetas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
 				{
 					break;
 				}
 				default:
-					break;
-			}
+					break;*/
 		}
+		else
+			return false;
 }
 
 
@@ -432,7 +523,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 		break;
 	}
-
+	*/
 	case ' ':
 	{
 		if (falcon->shoot())
@@ -440,7 +531,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		//movingCamera->setLinearVelocity(Vector3(0, 0, 0));
 
 		break;
-	}*/
+	}//*/
 
 	////////////////////////////////////////////////////////////
 

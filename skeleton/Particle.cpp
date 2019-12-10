@@ -253,4 +253,5 @@ PxRigidDynamic* Particle::getDin()
 void Particle::setPosition(Vector3 position_)
 {
 	position = position_;
+	*transform = PxTransform(position);
 }

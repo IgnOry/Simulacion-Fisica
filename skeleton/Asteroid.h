@@ -1,8 +1,8 @@
 #pragma once
-#include "ParticleSpring.h"
 
-class Asteroid: public ParticleSpring
+class Asteroid
 {
+protected:
 	Asteroid(Vector3 pos);
 	~Asteroid();
 
