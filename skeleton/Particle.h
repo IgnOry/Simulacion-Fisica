@@ -46,6 +46,7 @@ public:
 	bool getPlanet();
 	Vector3 force;
 	PxRigidDynamic* getDin();
+	RenderItem* rItem;
 
 protected:
 	float damping = 1.0f;
@@ -66,7 +67,6 @@ protected:
 
 	PxTransform* transform;
 
-	RenderItem* rItem;
 	PxRigidDynamic* din = nullptr;
 	PxRigidStatic* sta = nullptr;
 };

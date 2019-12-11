@@ -15,3 +15,8 @@ float FuelBox::getFuel()
 {
 	return fuel;
 }
+
+Particle* FuelBox::getPart()
+{
+	return part;
+}

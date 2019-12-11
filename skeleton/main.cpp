@@ -29,6 +29,7 @@
 #include "ServiceLocator.h"
 #include "SRandBasedGenerator.h"
 #include "sdl_includes.h"
+#include <stdlib.h>
 
 #undef main
 
@@ -36,9 +37,10 @@
 
 #include "Player.h"
 #include "Star.h"
-#include "Asteroid.h"
 #include "Planet.h"
 #include "FuelBox.h"
+#include "Ship.h"
+#include "Load.h"
 
 using namespace physx;
 
@@ -56,6 +58,8 @@ PxPvd* gPvd = NULL;
 PxDefaultCpuDispatcher* gDispatcher = NULL;
 PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
+
+///////////////////////////////////////////////////////
 
 std::vector<ParticleGenerator*> generatorsVec;
 std::vector<Particle*> particlesVec;
@@ -75,23 +79,26 @@ int counter = 3;
 float g = 1.0;
 bool running;
 
-/////////////////////
+///////////////////////////////////////////////////////
+//Variables
 Player* falcon;
+Planet* target;
+Load* load;
 physx::PxRigidDynamic* movingCamera = nullptr;
 Vector3 c;
 Vector3 p;
-Planet* pl;
-
+Firework* victory = nullptr;
+bool console = false;
 ///////////////////////////////////////////////////////
-//Vectores de partículas, de forma directa o indirecta
-std::vector<Particle*> particles; //Vector con todas
+//Vectores
 std::vector<Star*> stars;
-std::vector<Asteroid*> asteroids;
+std::vector<Ship*> ships;
 std::vector<Planet*> planets;
 std::vector<PxGenerator*> pxGens;
 std::vector<FuelBox*> fuel;
 std::vector<ParticleContact*> contacts;
-/////////////////////////
+///////////////////////////////////////////////////////
+//SDL
 ServiceLocator services_; // (textures, font, music, etc)
 SDLAudioManager audio_;
 SRandBasedGenerator random_;
@@ -124,260 +131,77 @@ void initPhysics(bool interactive)
 	// ------------------------------------------------------
 
 	falcon = new Player(GetCamera());
-	/*p1 = new Particle(50, Vector3(0, -10, 0), Vector4(1, 1, 1, 1), gScene, gPhysics, false, 1);
-	p2 = new Particle(1, Vector4(1, 1, 1, 1), Vector3(-15, 0, 0), 0, 0, 0, 1);
-
-	barra = new ParticleCable();
-	contact = new ParticleContact();*/
+	target = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(100, 100, 0));
+	load = new Load(Vector3(500, 0, 0));
 	contactManager = new ParticleContactManager();
-
-	/*barra->particle[0] = falcon->getParticle();
-	barra->particle[1] = p2;
-	barra->maxLength = 15;
-	barra->restitution = 0;*/
 
 	//movingCamera = gPhysics->createRigidDynamic(GetCamera()->getTransform());
 	//movingCamera->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	//gScene->addActor(*movingCamera);
 
-	pl = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(2, 0, 0));
+	//pxGens.push_back(new PxGenerator(Vector3(5, 0, 0), gScene, gPhysics));
 
-	//FuelBox* f = new FuelBox(0.5, Vector3(5, 5, 5));
-	//particles.push_back(pl->getPart());
-	planets.push_back(pl);
-
+	ships.push_back(new Ship(Vector3(20, 0, 0)));
+	
 	c = GetCamera()->getDir();
 	p = GetCamera()->getEye();
 }
 
-void collisionSystem()
+Vector3 RandomVec()
 {
-	//Nave con cosas
-	/*
-	
-	//////////////////////////////////////////////////////////////////////////////////////
+	float x = services_.getRandomGenerator()->nextInt(-5, 5);
+	float y = services_.getRandomGenerator()->nextInt(-5, 5);
+	float z = services_.getRandomGenerator()->nextInt(-5, 5);
 
-	//Nave con objetivo
+	Vector3 vec = Vector3(x, y, z);
 
-	if (detectCollisions(falcon.getPart(), target.getPart())
-	{
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	//Nave/Carga con planetas, Nave con asteroides y Nave con estrellas
-
-	//recorrido de vectores de planetas, asteroides, estrellas
-
-	stars;
-	asteroids;
-
-	if (detectCollisions(falcon.getPart(), pla/ast/sta)
-	{
-
-	}
-
-	if (detectCollisions(load.getPart(), pla/ast/sta)
-	{
-
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	//Nave con Combustible
-	
-	//recorrido de vector de fuelbox
-
-	fuel;
-
-		if (detectCollisions(falcon.getPart(), fbox)
-	{
-
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	
-	//Disparos con estrellas
-
-	//Recorrido de vector de disparos
-	//Recorrido de vector de estrellas
-
-	falcon->getMunicion();
-	stars;
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	//Disparos con planetas
-
-	//Recorrido de vector de disparos
-	//Recorrido de vector de planetas
-
-	falcon->getMunicion();
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	//Disparos con asteroides
-
-	//Recorrido de vector de disparos
-	//Recorrido de vector de asteroides
-
-	falcon->getMunicion();
-	asteroids;
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	
-	//Asteroides con planetas
-
-	//Recorrido de vector de asteroides
-	//Recorrido de vector de planetas
-	
-	asteroids;
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	//Asteroides con estrellas
-
-	//Recorrido de vector de asteroides
-	//Recorrido de vector de estrellas
-
-	asteroids;
-	stars;
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	//Asteroides con asteroides
-
-	//Recorrido de vector de asteroides
-	//Recorrido de vector de asteroides
-	//Comprobar que no es el mismo asteroide
-
-	asteroids;
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	//Planetas con estrellas
-
-	//Recorrido de vector de planetas
-	//Recorrido de vector de estrellas
-
-	stars;
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	//Planetas con otros planetas
-
-	//Recorrido de vector de planetas
-	//Recorrido de vector de planetas
-	//Comprobar que no es el mismo planeta
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	*/
-	
+	return vec;
 }
 
-bool detectCollisions(Particle* p1, Particle* p2)
+void deleteStuff()
 {
-		Vector3 distance = p2->getPosition() - p1->getPosition();
+	auto st = stars.begin();
+	while (!stars.empty() && st != stars.end()) {
+		Star* star = (*st);
 
-		float d = distance.magnitude();
-
-		float sumaRadio = p1->getRadio() + p2->getRadio();
-
-		if (d < sumaRadio)
+		if (star != nullptr)
 		{
-			return true;
-			/*
-			ParticleContact* cont = new ParticleContact();
+			stars.erase(stars.begin());
+			delete star;
+			st = stars.begin();
 
-					distance.normalize();
-
-					cont->particle[0] = p2;
-					cont->particle[1] = p1;
-					cont->contactNormal = distance;
-					cont->penetration = (sumaRadio - d);
-					cont->restitution = 1;
-
-					contactManager->addContact(cont);
-
-			switch (type)
-			{
-				case 0: //Nave con objetivo
-				{
-					break;
-				}
-				case 1: //Player/Carga con cosa -> El primero pierde salud
-				{
-					break;
-				}
-				case 2: //Nave con combustible -> El primero gana fuel, el segundo se destruye
-				{
-					break;
-				}
-				case 3: //Disparo con estrellas -> El primero se destruye, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
-				{
-					break;
-				}
-				case 4: //Disparo con planetas -> El primero se destruye, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
-				{
-					break;
-				}
-				case 5: //Disparo con asteroides -> El primero se destruye, el segundo se deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño
-
-				{
-					break;
-				}
-				case 6: //Asteroides con planetas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
-				{
-					break;
-				}
-				case 7: //Asteroides con estrellas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño si supera un minimo de tamaño, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
-				{
-					break;
-				}
-				case 8: //Planetas con estrellas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño, el segundo se destruye y deja un generador de particulas ¡¡¡Ver colisiones con las particulas generadas!!!
-				{
-					break;
-				}
-				case 9: //Planetas con planetas -> El primero se destruye y deja 2 asteroides de la mitad de tamaño, el segundo se destruye y deja 2 asteroides de la mitad de tamaño
-				{
-					break;
-				}
-				default:
-					break;*/
+			if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				st++;
 		}
-		else
-			return false;
-}
+	}
 
+	auto ast = ships.begin();
+	while (!ships.empty() && ast != ships.end()) {
+		Ship* sh = (*ast);
 
-// Function to configure what happens in each step of physics
-// interactive: true if the game is rendering, false if it offline
-// t: time passed since last call in milliseconds
-void stepPhysics(bool interactive, double t)
-{
-	PX_UNUSED(interactive);
-
-	auto auxP = particles.begin();
-
-	while (!particles.empty() && auxP != particles.end()) {
-		Particle* p = (*auxP);
-
-		if (p != nullptr)
+		if (sh != nullptr)
 		{
+			ships.erase(ships.begin());
+			delete sh;
+			ast = ships.begin();
 
-			pl->getAttach()->updateForce(p, t);
+			if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				ast++;
+		}
+	}
 
-			p->update(t);
+	auto pl = planets.begin();
+	while (!planets.empty() && pl != planets.end()) {
+		Planet* pla = (*pl);
 
-			if (p->deathTime(t)) {
-				particles.erase(particles.begin());
-				delete p;
-				auxP = particles.begin();
+		if (pla != nullptr)
+		{
+			planets.erase(planets.begin());
+			delete pla;
+			pl = planets.begin();
 
-			}
-
-			else if (!particles.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				auxP++;
+			if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				pl++;
 		}
 	}
 
@@ -387,9 +211,730 @@ void stepPhysics(bool interactive, double t)
 
 		if (px != nullptr)
 		{
+			pxGens.erase(pxGens.begin());
+			delete px;
+			gens = pxGens.begin();
+
+			if (!pxGens.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				gens++;
+		}
+	}
+
+	auto fu = fuel.begin();
+	while (!fuel.empty() && fu != fuel.end()) {
+		FuelBox* fue = (*fu);
+
+		if (fue != nullptr)
+		{
+			fuel.erase(fu);
+			delete fue;
+			fu = fuel.begin();
+
+			if (!fuel.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				fu++;
+		}
+	}
+
+	auto cont = contacts.begin();
+	while (!contacts.empty() && cont != contacts.end()) {
+		ParticleContact* conta = (*cont);
+
+		if (conta != nullptr)
+		{
+			contacts.erase(contacts.begin());
+			delete conta;
+			cont = contacts.begin();
+
+			if (!contacts.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				cont++;
+		}
+	}
+
+	//target
+	//falcon
+	//load
+}
+
+void generateRandom()
+{
+	//Stars
+	//Planets
+	//Ships
+	//Target
+}
+
+void updateConsole()
+{
+	system("CLS");
+
+	/*
+	Stuff
+	*/
+}
+
+bool detectCollisions(Particle* p1, Particle* p2)
+{
+	Vector3 distance = p2->getPosition() - p1->getPosition();
+
+	float d = distance.magnitude();
+
+	float sumaRadio = p1->getRadio() + p2->getRadio();
+
+	if (d < sumaRadio)
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+void collisionSystem()
+{
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	//Nave con objetivo
+
+	if (detectCollisions(falcon->getParticle(), target->getPart()))
+	{
+		console = false;
+		services_.getAudios()->playChannel(Resources::Laser, 0); //Cambiar por sonido de victoria
+		victory = new Firework(15, falcon->getParticle()->getPosition(), Vector3(0, 0, 0), 0, 1, 3, Vector3(0,-5,0));
+		deleteStuff();
+	}
+
+	//Nave y carga contra planetas, estrellas y naves
+
+	auto st = stars.begin();
+	while (!stars.empty() && st != stars.end()) {
+		Star* star = (*st);
+
+		if (star != nullptr)
+		{
+			if (detectCollisions(falcon->getParticle(), star->getPart()))
+			{
+				falcon->changeHealth(-10);
+				pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+				stars.erase(stars.begin());
+				delete star;
+				st = stars.begin();
+			}
+
+			if (detectCollisions(load->getPart(), star->getPart()))
+			{
+				load->changeHealth(-10);
+				pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+				stars.erase(stars.begin());
+				delete star;
+				st = stars.begin();
+			}
+
+			if (!stars.empty())
+				st++;
+		}
+	}
+
+	auto pl = planets.begin();
+	while (!planets.empty() && pl != planets.end()) {
+		Planet* pla = (*pl);
+
+		if (pla != nullptr)
+		{
+			if (detectCollisions(falcon->getParticle(), pla->getPart()))
+			{
+				falcon->changeHealth(-10);
+			}
+
+			if (detectCollisions(load->getPart(), pla->getPart()))
+			{
+				load->changeHealth(-10);
+			}
+
+			//if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				pl++;
+		}
+	}
+
+	auto ast = ships.begin();
+	while (!ships.empty() && ast != ships.end()) {
+		Ship* sh = (*ast);
+
+		if (sh != nullptr)
+		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			//Player
+
+			if (detectCollisions(falcon->getParticle(), sh->getSpring()->getOther()))
+			{
+				falcon->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (detectCollisions(falcon->getParticle(), sh->get1()))
+			{
+				falcon->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (detectCollisions(falcon->getParticle(), sh->get2()))
+			{
+				falcon->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (detectCollisions(falcon->getParticle(), sh->get3()))
+			{
+				falcon->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (detectCollisions(falcon->getParticle(), sh->get4()))
+			{
+				falcon->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//Carga
+
+			if (detectCollisions(load->getPart(), sh->getSpring()->getOther()))
+			{
+				load->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (detectCollisions(load->getPart(), sh->get1()))
+			{
+				load->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (detectCollisions(load->getPart(), sh->get2()))
+			{
+				load->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (detectCollisions(load->getPart(), sh->get3()))
+			{
+				load->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (detectCollisions(load->getPart(), sh->get4()))
+			{
+				load->changeHealth(-10);
+				ParticleContact* cont = new ParticleContact();
+
+				Vector3 norm = sh->getSpring()->getOther()->getPosition() - falcon->getParticle()->getPosition();
+				float radios = sh->getSpring()->getOther()->getRadio() + falcon->getParticle()->getRadio();
+				float d = norm.magnitude();
+
+				cont->particle[0] = falcon->getParticle();
+				cont->particle[1] = sh->getSpring()->getOther();
+
+				cont->contactNormal = norm;
+				cont->penetration = radios - d;
+				cont->restitution = 1;
+
+				contactManager->addContact(cont);
+			}
+
+			if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				ast++;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//Municion contra planetas, estrellas y navez
+
+	auto shoot = falcon->getMunicion().begin();
+	while (!falcon->getMunicion().empty() && shoot != falcon->getMunicion().end()) {
+		Particle* shot = (*shoot);
+
+		if (shot != nullptr)
+		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			auto st = stars.begin();
+			while (!stars.empty() && st != stars.end()) {
+				Star* star = (*st);
+
+				if (star != nullptr)
+				{
+					if (detectCollisions(shot, star->getPart()))
+					{
+						falcon->getMunicion().erase(falcon->getMunicion().begin());
+						delete shot;
+						shoot = falcon->getMunicion().begin();
+
+						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+
+						stars.erase(stars.begin());
+						delete star;
+						st = stars.begin();
+					}
+
+					if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+						st++;
+				}
+			}
+
+			auto ast = ships.begin();
+			while (!ships.empty() && ast != ships.end()) {
+				Ship* sh = (*ast);
+
+				if (sh != nullptr)
+				{
+					//////////////////////////////////////////////////////////////////////////////////////
+					//Player
+
+					if (detectCollisions(shot, sh->getSpring()->getOther()))
+					{
+						falcon->getMunicion().erase(falcon->getMunicion().begin());
+						delete shot;
+						shoot = falcon->getMunicion().begin();
+
+						fuel.push_back(new FuelBox(sh->getSpring()->getOther()->getRadio(), sh->getSpring()->getOther()->getPosition()));
+
+						ships.erase(ships.begin());
+						delete sh;
+						ast = ships.begin();
+					}
+
+					if (detectCollisions(shot, sh->get1()))
+					{
+						falcon->getMunicion().erase(falcon->getMunicion().begin());
+						delete shot;
+						shoot = falcon->getMunicion().begin();
+					}
+
+					if (detectCollisions(shot, sh->get2()))
+					{
+						falcon->getMunicion().erase(falcon->getMunicion().begin());
+						delete shot;
+						shoot = falcon->getMunicion().begin();
+					}
+
+					if (detectCollisions(shot, sh->get3()))
+					{
+						falcon->getMunicion().erase(falcon->getMunicion().begin());
+						delete shot;
+						shoot = falcon->getMunicion().begin();
+					}
+
+					if (detectCollisions(shot, sh->get4()))
+					{
+						falcon->getMunicion().erase(falcon->getMunicion().begin());
+						delete shot;
+						shoot = falcon->getMunicion().begin();
+					}
+
+					if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+						ast++;
+				}
+			}
+
+			auto pl = planets.begin();
+			while (!planets.empty() && pl != planets.end()) {
+				Planet* pla = (*pl);
+
+				if (pla != nullptr)
+				{					
+					if (detectCollisions(shot, pla->getPart()))
+					{
+						falcon->getMunicion().erase(falcon->getMunicion().begin());
+						delete shot;
+						shoot = falcon->getMunicion().begin();
+
+						Ship* s = new Ship(pla->getPart()->getPosition());
+						s->getSpring()->getOther()->setVelocity(RandomVec());
+						ships.push_back(s);
+						
+						planets.erase(planets.begin());
+						delete pla;
+						pl = planets.begin();
+					}
+
+					if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+						pl++;
+				}
+			}
+
+			if (!falcon->getMunicion().empty()) 
+				shoot++;
+		}
+	}	
+
+	auto fu = fuel.begin();
+	while (!fuel.empty() && fu != fuel.end()) {
+		FuelBox* fue = (*fu);
+
+		if (fue != nullptr)
+		{
+			if (detectCollisions(falcon->getParticle(), fue->getPart()))
+			{
+				falcon->changeFuel(fue->getFuel());
+
+				fuel.erase(fuel.begin());
+				delete fue;
+				fu = fuel.begin();
+			}
+
+			if (!fuel.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				fu++;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//Recorridos de vectores que no afectan al jugador
+
+	//Planetas con estrellas y naves, y otros planetas
+	auto pl1 = planets.begin();
+	while (!planets.empty() && pl1 != planets.end()) {
+		Planet* pla1 = (*pl1);
+
+		if (pla1 != nullptr)
+		{
+			auto st = stars.begin();
+			while (!stars.empty() && st != stars.end()) {
+				Star* star = (*st);
+
+				if (star != nullptr)
+				{
+					if (detectCollisions(pla1->getPart(), star->getPart()))
+					{
+						Ship* s = new Ship(pla1->getPart()->getPosition());
+						s->getSpring()->getOther()->setVelocity(RandomVec());
+						ships.push_back(s);
+
+						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+
+						planets.erase(planets.begin());
+						delete pla1;
+						pl1 = planets.begin();
+
+						stars.erase(stars.begin());
+						delete star;
+						st = stars.begin();
+					}
+
+					if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+						st++;
+				}
+			}
+
+			auto ast = ships.begin();
+			while (!ships.empty() && ast != ships.end()) {
+				Ship* sh = (*ast);
+
+				if (sh != nullptr)
+				{
+					//////////////////////////////////////////////////////////////////////////////////////
+					//Player
+
+					if (detectCollisions(pla1->getPart(), sh->getSpring()->getOther()))
+					{
+						Ship* s = new Ship(pla1->getPart()->getPosition());
+						s->getSpring()->getOther()->setVelocity(RandomVec());
+						ships.push_back(s);
+
+						fuel.push_back(new FuelBox(sh->getSpring()->getOther()->getRadio(), sh->getSpring()->getOther()->getPosition()));
+
+						planets.erase(planets.begin());
+						delete pla1;
+						pl1 = planets.begin();
+
+						ships.erase(ships.begin());
+						delete sh;
+						ast = ships.begin();
+					}
+
+					if (detectCollisions(pla1->getPart(), sh->get1()))
+					{
+						ships.push_back(new Ship(pla1->getPart()->getPosition()));
+
+						planets.erase(planets.begin());
+						delete pla1;
+						pl1 = planets.begin();
+					}
+
+					if (detectCollisions(pla1->getPart(), sh->get2()))
+					{
+						ships.push_back(new Ship(pla1->getPart()->getPosition()));
+
+						planets.erase(planets.begin());
+						delete pla1;
+						pl1 = planets.begin();
+					}
+
+					if (detectCollisions(pla1->getPart(), sh->get3()))
+					{
+						ships.push_back(new Ship(pla1->getPart()->getPosition()));
+
+						planets.erase(planets.begin());
+						delete pla1;
+						pl1 = planets.begin();
+					}
+
+					if (detectCollisions(pla1->getPart(), sh->get4()))
+					{
+						ships.push_back(new Ship(pla1->getPart()->getPosition()));
+
+						planets.erase(planets.begin());
+						delete pla1;
+						pl1 = planets.begin();
+					}
+
+					if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+						ast++;
+				}
+			}
+
+			auto pl2 = planets.begin();
+			while (!planets.empty() && pl2 != planets.end()) {
+				Planet* pla2 = (*pl2);
+
+				if (pla2 != nullptr && pla1 != pla2)
+				{
+					if (detectCollisions(pla1->getPart(), pla2->getPart()))
+					{
+						Ship* s = new Ship(pla1->getPart()->getPosition());
+						s->getSpring()->getOther()->setVelocity(RandomVec());
+						ships.push_back(s);
+
+						Ship* s1 = new Ship(pla2->getPart()->getPosition());
+						s->getSpring()->getOther()->setVelocity(RandomVec());
+						ships.push_back(s1);
+
+						planets.erase(planets.begin());
+						delete pla1;
+						pl1 = planets.begin();
+						
+						planets.erase(planets.begin());
+						delete pla2;
+						pl2 = planets.begin();
+					}
+
+					if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+						pl2++;
+				}
+			}
+
+			if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				pl2++;
+		}
+	}
+
+	//Naves con estrellas (el choque no afecta contra otras naves, y las estrellas no se mueven asi que no hay que comprobar estrella con estrella)
+
+	auto ast1 = ships.begin();
+	while (!ships.empty() && ast1 != ships.end()) {
+		Ship* sh = (*ast1);
+
+		if (sh != nullptr)
+		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			//Player
+
+			auto st = stars.begin();
+			while (!stars.empty() && st != stars.end()) {
+				Star* star = (*st);
+
+				if (star != nullptr)
+				{
+					if (detectCollisions(star->getPart(), sh->getSpring()->getOther()))
+					{
+						fuel.push_back(new FuelBox(sh->getSpring()->getOther()->getRadio(), sh->getSpring()->getOther()->getPosition()));
+						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+
+						ships.erase(ships.begin());
+						delete sh;
+						ast = ships.begin();
+
+						stars.erase(stars.begin());
+						delete star;
+						st = stars.begin();
+					}
+
+					if (detectCollisions(star->getPart(), sh->get1()))
+					{
+						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+
+						stars.erase(stars.begin());
+						delete star;
+						st = stars.begin();
+					}
+
+					if (detectCollisions(star->getPart(), sh->get2()))
+					{
+						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+
+						stars.erase(stars.begin());
+						delete star;
+						st = stars.begin();
+					}
+
+					if (detectCollisions(star->getPart(), sh->get3()))
+					{
+						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+
+						stars.erase(stars.begin());
+						delete star;
+						st = stars.begin();
+					}
+
+					if (detectCollisions(star->getPart(), sh->get4()))
+					{
+						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
+
+						stars.erase(stars.begin());
+						delete star;
+						st = stars.begin();
+					}
+
+					if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+						st++;
+				}
+			}
+
+			if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+				ast1++;
+		}
+	}
+}
+
+// Function to configure what happens in each step of physics
+// interactive: true if the game is rendering, false if it offline
+// t: time passed since last call in milliseconds
+void stepPhysics(bool interactive, double t)
+{
+	PX_UNUSED(interactive);
+
+	auto gens = pxGens.begin();
+	while (!pxGens.empty() && gens != pxGens.end()) {
+		PxGenerator* px = (*gens);
+
+		if (px != nullptr)
+		{
 			px->update(t);
 
-			if (px->deathTime(t)) {
+			if (px->getPart()->deathTime(t)) {
 				pxGens.erase(pxGens.begin());
 				delete px;
 				gens = pxGens.begin();
@@ -430,20 +975,25 @@ void stepPhysics(bool interactive, double t)
 		{
 			planet->update(t);
 
-			/*if (planet->getPart()->deathTime(t)) {		//Estos no se destruyen por tiempo
-				planets.erase(planets.begin());
-				delete planet;
-				pla = planets.begin();
-			}*/
+			//Estos no se destruyen por tiempo
 
 			if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
 				pla++;
 		}
 	}
 
-	//detectCollisions();
-	//contactManager->update(t);
+	falcon->update(t);
 
+	collisionSystem();
+	contactManager->update(t);
+
+	if (victory != nullptr)
+	{
+		if (!victory->deathTime(t))
+			victory->update(t);
+		else
+			delete victory;
+	}
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -481,15 +1031,6 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 	switch (toupper(key))
 	{
-
-	case 'P':
-	{
-		Particle* p = new Particle(0.1, Vector4(0.0, 1.0, 0.0, 1.0), GetCamera()->getTransform().p, 15.0f);
-		p->setDirVel(Vector3(0.0, 0.0, 0.0), GetCamera()->getDir() * 15);
-		particles.push_back(p);
-		break;
-	}
-
 	/*case 'W':
 	{
 		falcon->handleEvent(key);

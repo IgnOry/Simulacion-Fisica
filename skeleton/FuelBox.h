@@ -10,5 +10,6 @@ class FuelBox
 		FuelBox(float size, Vector3 pos);
 		~FuelBox();
 		float getFuel();
+		Particle* getPart();
 };
 

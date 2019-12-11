@@ -2,7 +2,7 @@
 
 ParticleSpring::ParticleSpring(float k_, float restLength_, Vector3 pos)
 {
-	other = new Particle(1, Vector4(1, 1, 1, 1), pos, 50, 0, 0, 1);
+	other = new Particle(1, Vector4(1, 0, 0, 1), pos, 50, 0, 0, 0);
 	k = k_;
 	restLength = restLength_;
 }
@@ -45,4 +45,9 @@ void ParticleSpring::setPosition(Vector3 pos)
 {
 	other->setPosition(pos);
 	other->setRItem(1);
+}
+
+Particle* ParticleSpring::getOther()
+{
+	return other;
 }

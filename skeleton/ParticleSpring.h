@@ -16,4 +16,5 @@ public:
 	float getK();
 	void kkk(float k_);
 	void setPosition(Vector3 pos);
+	Particle* getOther();
 };

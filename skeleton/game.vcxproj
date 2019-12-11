@@ -255,7 +255,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="Load.cpp" />
+    <ClCompile Include="Ship.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="ExplosionGenerator.cpp" />
@@ -293,7 +294,8 @@
     <ClCompile Include="WindGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="Load.h" />
+    <ClInclude Include="Ship.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />

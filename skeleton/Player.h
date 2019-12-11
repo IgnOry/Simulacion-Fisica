@@ -10,9 +10,8 @@ private:
 	Particle* falcon;
 	int maxBullets_ = 15;
 	Camera* cam_ = nullptr;
-	std::vector<Particle*> municion;
 	float fuel = 1000;
-
+	float health = 100;
 public:
 	Player(Camera* c);
 	void update(float t);
@@ -21,5 +20,10 @@ public:
 	Particle* getParticle();
 	bool shoot();
 	std::vector<Particle*> getMunicion();
+	float getHealth();
+	void changeHealth(float value);
+	float getFuel();
+	void changeFuel(float value_);
+	std::vector<Particle*> municion;
 };
 

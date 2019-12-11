@@ -2,74 +2,74 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Render\Camera.cpp">
-      <Filter>_Base\Render</Filter>
+      <Filter>_BasePhysx\Render</Filter>
     </ClCompile>
     <ClCompile Include="Render\Render.cpp">
-      <Filter>_Base\Render</Filter>
+      <Filter>_BasePhysx\Render</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="callbacks.cpp">
-      <Filter>_Base</Filter>
+      <Filter>_BasePhysx</Filter>
     </ClCompile>
     <ClCompile Include="RenderUtils.cpp">
-      <Filter>_Base</Filter>
+      <Filter>_BasePhysx</Filter>
     </ClCompile>
     <ClCompile Include="ExplosionGenerator.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="Firework.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="Particle.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleAnchoredSpring.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleBungie.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleBuoyancy.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleCable.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleContact.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleContactManager.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleDrag.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleForceGenerator.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleForceRegistry.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleGenerator.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleGravity.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleLink.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleRod.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="ParticleSpring.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="PxGenerator.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="WindGenerator.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Practicas\Sources</Filter>
     </ClCompile>
     <ClCompile Include="Resources.cpp">
       <Filter>_SDL\Sources</Filter>
@@ -92,7 +92,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>FinalGame\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="AttachForceGenerator.cpp">
       <Filter>FinalGame\Sources</Filter>
     </ClCompile>
@@ -102,80 +101,88 @@
     <ClCompile Include="Planet.cpp">
       <Filter>FinalGame\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="FuelBox.cpp" />
+    <ClCompile Include="Ship.cpp">
+      <Filter>FinalGame\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FuelBox.cpp">
+      <Filter>FinalGame\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Load.cpp">
+      <Filter>FinalGame\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render\Camera.h">
-      <Filter>_Base\Render</Filter>
+      <Filter>_BasePhysx\Render</Filter>
     </ClInclude>
     <ClInclude Include="Render\Render.h">
-      <Filter>_Base\Render</Filter>
+      <Filter>_BasePhysx\Render</Filter>
     </ClInclude>
     <ClInclude Include="callbacks.hpp">
-      <Filter>_Base</Filter>
+      <Filter>_BasePhysx</Filter>
     </ClInclude>
     <ClInclude Include="core.hpp">
-      <Filter>_Base</Filter>
+      <Filter>_BasePhysx</Filter>
     </ClInclude>
     <ClInclude Include="Firework.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ExplosionGenerator.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Particle.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleAnchoredSpring.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleBungie.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleBuoyancy.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleCable.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleContact.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleContactManager.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleDrag.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleForceGenerator.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleForceRegistry.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleGenerator.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleGravity.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleLink.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleRod.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="ParticleSpring.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="PxGenerator.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="WindGenerator.h">
-      <Filter>Headers</Filter>
+      <Filter>Practicas\Headers</Filter>
     </ClInclude>
     <ClInclude Include="RenderUtils.hpp">
-      <Filter>_Base</Filter>
+      <Filter>_BasePhysx</Filter>
     </ClInclude>
     <ClInclude Include="AudioManager.h">
       <Filter>_SDL\Headers</Filter>
@@ -201,7 +208,6 @@
     <ClInclude Include="Player.h">
       <Filter>FinalGame\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Asteroid.h" />
     <ClInclude Include="AttachForceGenerator.h">
       <Filter>FinalGame\Headers</Filter>
     </ClInclude>
@@ -211,23 +217,19 @@
     <ClInclude Include="Planet.h">
       <Filter>FinalGame\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="FuelBox.h" />
+    <ClInclude Include="Ship.h">
+      <Filter>FinalGame\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="FuelBox.h">
+      <Filter>FinalGame\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Load.h">
+      <Filter>FinalGame\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{13b0b2f3-fe05-4178-9e6d-16e156949fca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources">
-      <UniqueIdentifier>{2e0a4436-5eab-4472-8025-4c2778a0a6cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="_SDL">
       <UniqueIdentifier>{a5eccaf3-85b9-4430-8fc4-2f66bc4dd4a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="_Base">
-      <UniqueIdentifier>{9ae9abe4-db60-44dd-b7b0-73167f6579a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="_Base\Render">
-      <UniqueIdentifier>{d04b4f9f-5a69-465e-8070-25c6d0bcd3c2}</UniqueIdentifier>
     </Filter>
     <Filter Include="_SDL\Headers">
       <UniqueIdentifier>{fb69d2c8-7a78-4b47-a78b-5186bb434532}</UniqueIdentifier>
@@ -243,6 +245,21 @@
     </Filter>
     <Filter Include="FinalGame\Sources">
       <UniqueIdentifier>{ce9b2929-59d0-49c9-8468-6000c62934e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_BasePhysx">
+      <UniqueIdentifier>{9ae9abe4-db60-44dd-b7b0-73167f6579a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_BasePhysx\Render">
+      <UniqueIdentifier>{d04b4f9f-5a69-465e-8070-25c6d0bcd3c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Practicas">
+      <UniqueIdentifier>{2ffefe4e-6715-4b80-ac23-48ebb607344c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Practicas\Headers">
+      <UniqueIdentifier>{13b0b2f3-fe05-4178-9e6d-16e156949fca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Practicas\Sources">
+      <UniqueIdentifier>{2e0a4436-5eab-4472-8025-4c2778a0a6cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

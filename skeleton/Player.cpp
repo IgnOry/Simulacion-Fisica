@@ -97,3 +97,23 @@ std::vector<Particle*> Player::getMunicion()
 {
 	return municion;
 }
+
+float Player::getHealth()
+{
+	return health;
+}
+
+void Player::changeHealth(float value_)
+{
+	health = health + value_;
+}
+
+float Player::getFuel()
+{
+	return fuel;
+}
+
+void Player::changeFuel(float value_)
+{
+	fuel = fuel + value_;
+}

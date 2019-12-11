@@ -12,7 +12,7 @@ Planet::Planet(float radius, Vector4 c, Vector3 pos, float speed_, int rotation_
 
 	rotation = rotation_;
 
-	std::cout << distance << std::endl;
+	//std::cout << distance << std::endl;
 }
 
 Planet::~Planet()
