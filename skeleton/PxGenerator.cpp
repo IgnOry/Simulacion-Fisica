@@ -19,11 +19,13 @@ PxGenerator::~PxGenerator()
 
 		particlesVec.erase(particlesVec.begin());
 		
-		p->getDin()->setGlobalPose(PxTransform(Vector3(0, -100000, 0)));
+		scene->removeActor(*p->getDin()); //Ya que da error al borrar, al menos que no colapsen las fisicas
+
+		p->getDin()->setGlobalPose(PxTransform(Vector3(0, -10000000, 0))); //Esto está aquí al lado
 
 		auxP = particlesVec.begin();
 		
-		if (!particlesVec.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
+		if (!particlesVec.empty())
 			auxP++;
 	}
 

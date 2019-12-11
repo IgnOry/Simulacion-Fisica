@@ -65,7 +65,7 @@ protected:
 
 	Vector4 color;
 
-	PxTransform* transform;
+	PxTransform* transform = nullptr;
 
 	PxRigidDynamic* din = nullptr;
 	PxRigidStatic* sta = nullptr;

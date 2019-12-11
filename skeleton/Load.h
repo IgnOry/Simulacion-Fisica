@@ -7,7 +7,7 @@ class Load
 		float health = 100;
 		Particle* part;
 	public:
-		Load(Vector3 pos);
+		Load(Vector3 pos, PxScene* scene_, PxPhysics* pxphy_);
 		~Load();
 		Particle* getPart();
 		float getHealth();

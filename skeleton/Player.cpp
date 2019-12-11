@@ -1,34 +1,21 @@
 #include "Player.h"
 
-Player::Player(Camera* c)
+Player::Player(PxScene* scene_, PxPhysics* pxphy_)
 {
-	falcon = new Particle(10, Vector4(0.3, 0.3, 0.3, 1), Vector3(0, 0, 0), 0.0, 0, 0, 0);
-	cam_ = c;
+	falcon = new Particle(5, Vector3(0, 0, 0), Vector4(1, 1, 1, 1), scene_, pxphy_, true, 0);//(10, Vector4(0.3, 0.3, 0.3, 1), Vector3(0, 0, 0), 0.0, 0, 0, 0);
+	pos = Vector3(0, 0, 0);
 }
 
 void Player::update(float t)
 {
-	falcon->update(t);
+	falcon->getDin()->setLinearVelocity(Vector3(100 * throtle, 50 * topdown, 50 * leftright));
+	falcon->setPosition(falcon->getDin()->getGlobalPose().p);
 
-	auto it = municion.begin();
+	Vector3 dist = falcon->getDin()->getGlobalPose().p - pos;
+	float d = dist.magnitude();
+	changeFuel(-d/100);
 
-	while (!municion.empty() && it != municion.end()) {
-		Particle* p = (*it);
-
-		if (p != nullptr)
-		{
-			p->update(t);
-
-			if (p->deathTime(t)) {
-				municion.erase(municion.begin());
-				delete p;
-				it = municion.begin();
-			}
-
-			else if (!municion.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				it++;
-		}
-	}
+	pos = falcon->getDin()->getGlobalPose().p;
 }
 
 void Player::handleEvent(char c)
@@ -37,28 +24,66 @@ void Player::handleEvent(char c)
 	{
 	case 'W':
 	{
-		falcon->setVelocity(Vector3(5, 0, 0));
+		if (throtle < 1.0)
+		{
+			throtle = throtle + 0.05;
+			std::cout << "Dale gas " << throtle << " " << std::endl;
+		}
+		//falcon->getDin()->setLinearVelocity(Vector3(5, 0, 0));
 		break;
 	}
 	case 'A':
 	{
-		falcon->setVelocity(Vector3(0, 0, -5));
-		std::cout << "a" << std::endl;
+		if (leftright > -1.0)
+		{
+			leftright = leftright - 0.05;
+			std::cout << "Dale gas " << throtle << " " << std::endl;
+		}
+		//falcon->getDin()->setLinearVelocity(Vector3(5, 0, 0));
 		break;
 	}
 	case 'S':
 	{
-		falcon->setVelocity(Vector3(-5, 0, 0));
+		if (throtle > -1.0)
+		{
+			throtle = throtle - 0.05;
+			std::cout << "No le des gas " << throtle << " " << std::endl;
+		}
 		break;
 	}
 	case 'D':
 	{
-		falcon->setVelocity(Vector3(0, 0, 5));
+		if (leftright < 1.0)
+		{
+			leftright = leftright + 0.05;
+			std::cout << "No le des gas " << throtle << " " << std::endl;
+		}
+		break;
+	}
+	case 'I':
+	{
+		if (topdown < 1.0)
+		{
+			topdown = topdown + 0.05;
+			std::cout << "No le des gas " << throtle << " " << std::endl;
+		}
+		break;
+	}
+	case 'K':
+	{
+		if (topdown > -1.0)
+		{
+			topdown = topdown - 0.05;
+			std::cout << "Dale gas " << throtle << " " << std::endl;
+		}
+		//falcon->getDin()->setLinearVelocity(Vector3(5, 0, 0));
 		break;
 	}
 	case 'X':
 	{
-		falcon->setVelocity(Vector3(0, 0, 0));
+		topdown = 0;
+		leftright = 0;
+		throtle = 0;
 		break;
 	}
 	default:
@@ -74,28 +99,6 @@ Player::~Player()
 Particle* Player::getParticle()
 {
 	return falcon;
-}
-
-bool Player::shoot()
-{
-	if (municion.size() < maxBullets_)
-	{
-		Particle* p1 = new Particle(1, Vector4(0.0, 1.0, 0.0, 1.0), falcon->getPosition(), 3.0, 0, 0, 0);
-		p1->setDirVel(Vector3(0, 0, 0), cam_->getDir() * 100);
-
-		municion.push_back(p1);
-
-		std::cout << "eee" << std::endl;
-
-		return true;
-	}
-	else
-		return false;
-}
-
-std::vector<Particle*> Player::getMunicion()
-{
-	return municion;
 }
 
 float Player::getHealth()
@@ -116,4 +119,11 @@ float Player::getFuel()
 void Player::changeFuel(float value_)
 {
 	fuel = fuel + value_;
+}
+
+Vector3 Player::getAcc()
+{
+	Vector3 ret = Vector3(leftright, topdown, throtle); 
+
+	return ret;
 }

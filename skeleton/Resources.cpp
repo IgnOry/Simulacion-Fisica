@@ -17,6 +17,19 @@ vector<Resources::TextMsgInfo> Resources::messages_{
 
 vector<Resources::MusicInfo> Resources::musics_{
 	{Laser , "resources/sound/Laser.mp3"},
+
+	/*
+	Echar gasolina
+	Nave destruida
+	Estrella destruida
+	Planeta destruido
+
+	Daño nave
+	Daño carga
+
+	Victoria (FF Fanfare)
+	Derrota https://www.youtube.com/watch?v=mF31DPU-Rrs
+	*/
 };
 
 vector<Resources::SoundInfo> Resources::sounds_{

@@ -9,7 +9,7 @@ Particle::Particle(float r, Vector4 c, Vector3 pos, float time, int count_, int 
 	if (type == 0)
 		rItem = new RenderItem(CreateShape(PxSphereGeometry(radius)), transform, color);
 	else if (type == 1)
-		rItem = new RenderItem(CreateShape(PxBoxGeometry(radius, radius * 2, radius)), transform, color);
+		rItem = new RenderItem(CreateShape(PxBoxGeometry(radius, radius, radius)), transform, color);
 	else if (type == 2)
 		rItem = new RenderItem(CreateShape(PxCapsuleGeometry(1, 1)), transform, color);
 	lifeTime = time;
@@ -27,7 +27,7 @@ Particle::Particle(float radius, Vector3 pos, Vector4 color, PxScene* scene_, Px
 	if (type == 0)
 		shape = CreateShape(PxSphereGeometry(radius));
 	else if (type == 1)
-		shape = CreateShape(PxBoxGeometry(radius, radius * 2, radius));
+		shape = CreateShape(PxBoxGeometry(radius, radius, radius));
 	else if (type == 2)
 	{
 		shape = CreateShape(PxCapsuleGeometry(5, 50));
@@ -98,7 +98,7 @@ void Particle::setRItem(int shape, Vector4 c_)
 	else if (shape == 1)
 	{
 		rItem->release();
-		rItem = new RenderItem(CreateShape(PxBoxGeometry(1,1,1)), transform, c_);
+		rItem = new RenderItem(CreateShape(PxBoxGeometry(0.5, 0.5, 0.5)), transform, c_);
 	}
 	//case 2, capsula
 	{
@@ -253,5 +253,7 @@ PxRigidDynamic* Particle::getDin()
 void Particle::setPosition(Vector3 position_)
 {
 	position = position_;
+	
+	if (transform != nullptr)
 	*transform = PxTransform(position);
 }
