@@ -77,8 +77,6 @@ Particle* p2;
 int fireworkModes = 1;
 int counter = 3;
 float g = 1.0;
-bool running;
-
 ///////////////////////////////////////////////////////
 //Variables
 Player* falcon;
@@ -89,6 +87,8 @@ Vector3 c;
 Vector3 p;
 Firework* victory = nullptr;
 bool playing = false;
+bool win = false;
+
 PxDistanceJoint* j;
 
 ///////////////////////////////////////////////////////
@@ -127,7 +127,7 @@ void generateRandom()
 	//Ships
 
 	//std::cout << services_.getRandomGenerator()->nextInt(-500, 500) << std::endl;
-	target = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), RandomVec());
+	//target = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), RandomVec());
 
 	//target = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(float(services_.getRandomGenerator()->nextInt(-500, 500)), float(services_.getRandomGenerator()->nextInt(-500, 500)), float(services_.getRandomGenerator()->nextInt(-500, 500))));
 }
@@ -184,8 +184,11 @@ void initPhysics(bool interactive)
 
 	//pxGens.push_back(new PxGenerator(Vector3(5, 0, 0), gScene, gPhysics));
 
-	ships.push_back(new Ship(Vector3(20, 0, 0)));
-	
+	//ships.push_back(new Ship(Vector3(20, 0, 0)));
+	//planets.push_back(new Planet(50, Vector4(0, 1, 1, 1), Vector3(500, 0, 0)));
+
+	target = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(500, 0, 0));
+
 	c = GetCamera()->getDir();
 	p = GetCamera()->getEye();
 
@@ -284,17 +287,19 @@ void deleteStuff()
 		}
 	}
 
-	delete target;
+	target->getPart()->setPosition(Vector3(0, -10000000, 0));
 
-	gScene->removeActor(*falcon->getParticle()->getDin());
+	//gScene->removeActor(*falcon->getParticle()->getDin());
+	//falcon->getParticle()->getDin()->setGlobalPose(PxTransform(Vector3(0, -10000000, 0))); 
 	falcon->getParticle()->getDin()->setGlobalPose(PxTransform(Vector3(0, -10000000, 0))); 
 
-	gScene->removeActor(*load->getPart()->getDin()); 
+	//gScene->removeActor(*load->getPart()->getDin()); 
 	load->getPart()->getDin()->setGlobalPose(PxTransform(Vector3(0, -10000000, 0)));
 }
 
 void updateConsole() //X y Z cambiados por la camara
 {
+	
 	system("CLS");
 
 	std::cout << "Posicion del planeta objetivo: " << std::endl;
@@ -317,7 +322,7 @@ void updateConsole() //X y Z cambiados por la camara
 
 	std::cout << "Municion restante: " << std::endl;
 	std::cout << (15 - municion.size()) << std::endl;
-
+	
 	/*
 	Stuff
 	*/
@@ -369,8 +374,8 @@ void collisionSystem()
 	{
 		playing = false;
 		services_.getAudios()->playChannel(Resources::Laser, 0); //Cambiar por sonido de victoria
-		victory = new Firework(15, falcon->getParticle()->getDin()->getGlobalPose().p, Vector3(0, 0, 0), 0, 1, 3, Vector3(0,-5,0));
-		deleteStuff();
+		victory = new Firework(15, target->getPart()->getPosition(), Vector3(0, 0, 0), 0, 1, 3, Vector3(0,-5,0));
+		win = true;
 	}
 
 	//Nave y carga contra planetas, estrellas y naves
@@ -900,7 +905,7 @@ void collisionSystem()
 						planets.erase(planets.begin());
 						delete pla1;
 						pl1 = planets.begin();
-						
+
 						planets.erase(planets.begin());
 						delete pla2;
 						pl2 = planets.begin();
@@ -909,10 +914,13 @@ void collisionSystem()
 					if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
 						pl2++;
 				}
+
+				else if (pl1 == pl2)
+					pl2++;
 			}
 
 			if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				pl2++;
+				pl1++;
 		}
 	}
 
@@ -999,7 +1007,9 @@ void collisionSystem()
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t)
 {
-	PX_UNUSED(interactive);
+	if (playing)
+	{
+		PX_UNUSED(interactive);
 
 		auto gens = pxGens.begin();
 		while (!pxGens.empty() && gens != pxGens.end()) {
@@ -1048,7 +1058,9 @@ void stepPhysics(bool interactive, double t)
 
 			if (planet != nullptr)
 			{
-				planet->update(t);
+
+				planet->getAttach()->PxUpdateForce(falcon, t);
+				//planet->update(t);
 
 				//Estos no se destruyen por tiempo
 
@@ -1084,22 +1096,39 @@ void stepPhysics(bool interactive, double t)
 		gScene->simulate(t);
 		gScene->fetchResults(true);
 
-		updateConsole();
+		if (playing)
+			updateConsole();
 
 		movingCamera->setGlobalPose(PxTransform(falcon->getParticle()->getDin()->getGlobalPose().p.x - 50, falcon->getParticle()->getDin()->getGlobalPose().p.y + 10, falcon->getParticle()->getDin()->getGlobalPose().p.z));
 		//GetCamera()->setDir(falcon->getParticle()->getDin()->getLinearVelocity());
 		GetCamera()->setEye(movingCamera->getGlobalPose().p);
 
-		if (victory != nullptr)
-		{
-			if (!victory->deathTime(t))
-				victory->update(t);
-			else
-				delete victory;
-		}
-
 		if (falcon->getFuel() < 0 || falcon->getHealth() <= 0 || load->getHealth() <= 0)
+		{
 			playing = false;
+			win = false;
+		}
+	}
+	else 
+	{
+	if (win)
+	{ 
+		Vector3 v = victory->getPosition();
+		v.x = v.x - 50;
+		GetCamera()->setEye(v);
+
+
+		system("CLS");
+		std::cout << "sos un genio" << std::endl;
+		deleteStuff();
+	}
+	else
+	{
+		system("CLS");
+		std::cout << "sos malisimo hermano" << std::endl;
+		deleteStuff();
+	}
+	}
 	/////////////////////////////////////////////////////////////////////////
 }
 
@@ -1297,7 +1326,6 @@ int main(int, const char* const*)
 	if (a == 'y')
 		playing = true;
 
-	while (playing)
 	{
 #ifndef OFFLINE_EXECUTION 
 		extern void renderLoop();

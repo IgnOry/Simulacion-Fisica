@@ -14,6 +14,7 @@ private:
 	float leftright = 0;
 	float topdown = 0;
 	Vector3 pos;
+	bool trapped = false;
 public:
 	Player(PxScene* scene_, PxPhysics* pxphy_);
 	void update(float t);
@@ -25,5 +26,6 @@ public:
 	float getFuel();
 	void changeFuel(float value_);
 	Vector3 getAcc();
+	void setTrapped();
 };
 

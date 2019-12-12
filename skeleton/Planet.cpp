@@ -50,7 +50,7 @@ Vector3 Planet::nextPos(float t)
 
 	currentAngle = speed * trueTime;
 
-	std::cout << currentAngle << std::endl;
+	//std::cout << currentAngle << std::endl;
 
 	Vector3 offsetPos;
 

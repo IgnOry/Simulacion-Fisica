@@ -26,7 +26,7 @@ void AttachForceGenerator::updateForce(Particle* particleEx, float t)
 
 	float d = distance(particle->getPosition(), particleEx->getPosition());
 
-	Vector3 dif = pos1 - pos2;
+	Vector3 dif = pos2 - pos1;
 
 	force = dif.normalize();
 
@@ -46,8 +46,34 @@ void AttachForceGenerator::updateForce(Particle* particleEx, float t)
 	}
 }
 
-void AttachForceGenerator::PxUpdateForce(Particle* particleEx, float t)
+void AttachForceGenerator::PxUpdateForce(Player* particleEx, float t)
 {
+	Vector3 pos1 = particle->getPosition();
+	Vector3 pos2 = particleEx->getParticle()->getDin()->getGlobalPose().p;//->getPosition();
+
+	//float d = distance(particle->getPosition(), particleEx->getDin()->getGlobalPose().p);
+
+	Vector3 dif = pos2 - pos1;
+	float d = dif.magnitude();
+
+	force = dif.normalize();
+
+	/*std::cout << pos1.x << " " << pos1.y << " " << pos1.z << std::endl;
+	std::cout << pos2.x << " " << pos2.y << " " << pos2.z << std::endl;
+	std::cout << d << std::endl;*/
+
+
+	//std::cout << radio << std::endl;
+
+	if (d < radio)
+	{
+		if (!particleEx->getParticle()->hasInfiniteMass())
+		{
+			particleEx->setTrapped();
+			particleEx->getParticle()->getDin()->setLinearVelocity(-dif*force);
+			//std::cout << "skere" << std::endl;
+		}
+	}
 }
 
 Particle* AttachForceGenerator::getParticle()

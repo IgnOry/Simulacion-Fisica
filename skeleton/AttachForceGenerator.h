@@ -1,5 +1,6 @@
 #pragma once
 #include "ParticleForceGenerator.h"
+#include "Player.h"
 #include <iostream>
 
 class AttachForceGenerator: public ParticleForceGenerator
@@ -15,7 +16,7 @@ class AttachForceGenerator: public ParticleForceGenerator
 		AttachForceGenerator(float force_, Particle* planet_, float time_ = 0);
 		~AttachForceGenerator();
 		virtual void updateForce(Particle* particleEx, float t);
-		virtual void PxUpdateForce(Particle* particleEx, float t);
+		virtual void PxUpdateForce(Player* particleEx, float t);
 		Particle* getParticle();
 };
 
