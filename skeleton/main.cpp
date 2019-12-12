@@ -88,7 +88,7 @@ Vector3 p;
 Firework* victory = nullptr;
 bool playing = false;
 bool win = false;
-
+int zoom = 50;
 PxDistanceJoint* j;
 
 ///////////////////////////////////////////////////////
@@ -109,27 +109,63 @@ SRandBasedGenerator random_;
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-Vector3 RandomVec()
+Vector3 RandomVecPos()
 {
-	float x = services_.getRandomGenerator()->nextInt(-500, 500);
-	float y = services_.getRandomGenerator()->nextInt(-500, 500);
-	float z = services_.getRandomGenerator()->nextInt(-500, 500);
+	float x = services_.getRandomGenerator()->nextInt(-1000, 1000);
+	float y = services_.getRandomGenerator()->nextInt(-1000, 1000);
+	float z = services_.getRandomGenerator()->nextInt(-1000, 1000);
 
 	Vector3 vec = Vector3(x, y, z);
 
 	return vec;
 }
 
+Vector4 RandomVecCol()
+{
+	float a = services_.getRandomGenerator()->nextInt(0, 100);
+	float b = services_.getRandomGenerator()->nextInt(0, 100);
+	float c = services_.getRandomGenerator()->nextInt(0, 100);
+
+	float x = a / 100.f;
+	float y = b / 100.f;
+	float z = c / 100.f;
+
+	Vector4 vec = Vector4(x, y, z, 1);
+
+	return vec;
+}
+
 void generateRandom()
 {
-	//Stars
-	//Planets
-	//Ships
+	int nStars = services_.getRandomGenerator()->nextInt(0, 10);
+	int nPlanets = services_.getRandomGenerator()->nextInt(0, 10);
+	int nShips = services_.getRandomGenerator()->nextInt(0, 10);
 
-	//std::cout << services_.getRandomGenerator()->nextInt(-500, 500) << std::endl;
-	//target = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), RandomVec());
+	for (int i = 0; i < nPlanets; i++)
+	{
+		float a = services_.getRandomGenerator()->nextInt(0, 100);
+		float rot = a / 100.f;
+		float radio = services_.getRandomGenerator()->nextInt(10, 20);
+		float sp = services_.getRandomGenerator()->nextInt(20, 100);
+		float speed = sp / 100.0f;
+		planets.push_back(new Planet(radio, RandomVecCol(), RandomVecPos(), sp, rot));
+	}
+	for (int j = 0; j < nStars; j++)
+	{
+		float time = services_.getRandomGenerator()->nextInt(10, 50);
+		float radio = services_.getRandomGenerator()->nextInt(8, 20);
 
-	//target = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(float(services_.getRandomGenerator()->nextInt(-500, 500)), float(services_.getRandomGenerator()->nextInt(-500, 500)), float(services_.getRandomGenerator()->nextInt(-500, 500))));
+		stars.push_back(new Star(radio, RandomVecCol(), RandomVecPos(), time));
+	}
+	for (int k = 0; k < nShips; k++)
+	{
+		Ship* s = new Ship(RandomVecPos());
+		s->getSpring()->getOther()->setVelocity(RandomVecPos());
+
+		ships.push_back(s);
+	}
+
+	target = new Planet(5, Vector4(0.5, 0.5, 0.5, 1), RandomVecPos());
 }
 
 // Initialize physics engine
@@ -182,13 +218,6 @@ void initPhysics(bool interactive)
 	movingCamera->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	gScene->addActor(*movingCamera);
 
-	//pxGens.push_back(new PxGenerator(Vector3(5, 0, 0), gScene, gPhysics));
-
-	//ships.push_back(new Ship(Vector3(20, 0, 0)));
-	//planets.push_back(new Planet(50, Vector4(0, 1, 1, 1), Vector3(500, 0, 0)));
-
-	target = new Planet(5, Vector4(0.5, 0.5, 0.5, 0), Vector3(500, 0, 0));
-
 	c = GetCamera()->getDir();
 	p = GetCamera()->getEye();
 
@@ -197,94 +226,58 @@ void initPhysics(bool interactive)
 
 void deleteStuff()
 {
-	auto st = stars.begin();
-	while (!stars.empty() && st != stars.end()) {
-		Star* star = (*st);
-
-		if (star != nullptr)
-		{
-			stars.erase(stars.begin());
-			delete star;
-			st = stars.begin();
-
-			if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				st++;
-		}
+	auto it = stars.begin();
+	while (!stars.empty())
+	{
+		Star* star_ = *it;
+		delete star_;
+		stars.erase(it);
+		it = stars.begin();
+	}
+	
+	auto it1 = planets.begin();
+	while (!planets.empty())
+	{
+		Planet* planet_ = *it1;
+		delete planet_;
+		planets.erase(it1);
+		it1 = planets.begin();
+	}
+	
+	auto it2 = ships.begin();
+	while (!ships.empty())
+	{
+		Ship* ship_ = *it2;
+		delete ship_;
+		ships.erase(it2);
+		it2 = ships.begin();
 	}
 
-	auto ast = ships.begin();
-	while (!ships.empty() && ast != ships.end()) {
-		Ship* sh = (*ast);
-
-		if (sh != nullptr)
-		{
-			ships.erase(ships.begin());
-			delete sh;
-			ast = ships.begin();
-
-			if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				ast++;
-		}
+	auto it3 = fuel.begin();
+	while (!fuel.empty())
+	{
+		FuelBox* fuel_ = *it3;
+		delete fuel_;
+		fuel.erase(it3);
+		it3 = fuel.begin();
 	}
 
-	auto pl = planets.begin();
-	while (!planets.empty() && pl != planets.end()) {
-		Planet* pla = (*pl);
-
-		if (pla != nullptr)
-		{
-			planets.erase(planets.begin());
-			delete pla;
-			pl = planets.begin();
-
-			if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				pl++;
-		}
+	auto it4 = pxGens.begin();
+	while (!pxGens.empty())
+	{
+		PxGenerator* pxGen_ = *it4;
+		delete pxGen_;
+		pxGens.erase(it4);
+		it4 = pxGens.begin();
 	}
 
-	auto gens = pxGens.begin();
-	while (!pxGens.empty() && gens != pxGens.end()) {
-		PxGenerator* px = (*gens);
-
-		if (px != nullptr)
-		{
-			pxGens.erase(pxGens.begin());
-			delete px;
-			gens = pxGens.begin();
-
-			if (!pxGens.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				gens++;
-		}
-	}
-
-	auto fu = fuel.begin();
-	while (!fuel.empty() && fu != fuel.end()) {
-		FuelBox* fue = (*fu);
-
-		if (fue != nullptr)
-		{
-			fuel.erase(fu);
-			delete fue;
-			fu = fuel.begin();
-
-			if (!fuel.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				fu++;
-		}
-	}
-
-	auto cont = contacts.begin();
-	while (!contacts.empty() && cont != contacts.end()) {
-		ParticleContact* conta = (*cont);
-
-		if (conta != nullptr)
-		{
-			contacts.erase(contacts.begin());
-			delete conta;
-			cont = contacts.begin();
-
-			if (!contacts.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				cont++;
-		}
+	auto it5 = contacts.begin();
+	while (!contacts.empty())
+	{
+		ParticleContact* contact_ = *it5;
+		delete contact_;
+		contacts.erase(it5);
+		it5 = contacts.begin();
 	}
 
 	target->getPart()->setPosition(Vector3(0, -10000000, 0));
@@ -299,7 +292,6 @@ void deleteStuff()
 
 void updateConsole() //X y Z cambiados por la camara
 {
-	
 	system("CLS");
 
 	std::cout << "Posicion del planeta objetivo: " << std::endl;
@@ -322,10 +314,6 @@ void updateConsole() //X y Z cambiados por la camara
 
 	std::cout << "Municion restante: " << std::endl;
 	std::cout << (15 - municion.size()) << std::endl;
-	
-	/*
-	Stuff
-	*/
 }
 
 bool detectCollisions(Particle* p1, Particle* p2)
@@ -333,22 +321,27 @@ bool detectCollisions(Particle* p1, Particle* p2)
 	Vector3 a;
 	Vector3 b;
 
-	if (p2->getDin() != nullptr)
+	if (p2 != nullptr && p2->getDin() != nullptr)
 	{
 		a = p2->getDin()->getGlobalPose().p;
 	}
-	else
+	else if (p2 != nullptr)
 	{
 		a = p2->getPosition();
 	}
-	if (p1->getDin() != nullptr)
+	else
+		return false;
+
+	if (p1 != nullptr && p1->getDin() != nullptr)
 	{
 		b = p1->getDin()->getGlobalPose().p;
 	}
-	else
+	else if (p1 != nullptr)
 	{
 		b = p1->getPosition();
 	}
+	else
+		return false;
 
 	Vector3 distance = a - b;
 
@@ -374,8 +367,13 @@ void collisionSystem()
 	{
 		playing = false;
 		services_.getAudios()->playChannel(Resources::Laser, 0); //Cambiar por sonido de victoria
-		victory = new Firework(15, target->getPart()->getPosition(), Vector3(0, 0, 0), 0, 1, 3, Vector3(0,-5,0));
 		win = true;
+		victory = new Firework(0.05f, GetCamera()->getEye(), Vector3(0.0f, 0.0f, 0.0f), 0, 1, 3, Vector3(0, 0, 0));
+		Vector3 v = victory->getPosition();
+		v.x = v.x - 50;
+		v.y = v.y - 30;
+		movingCamera->setGlobalPose(PxTransform(v));
+		GetCamera()->setEye(movingCamera->getGlobalPose().p);
 	}
 
 	//Nave y carga contra planetas, estrellas y naves
@@ -390,22 +388,31 @@ void collisionSystem()
 			{
 				falcon->changeHealth(-10);
 				pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
-				stars.erase(stars.begin());
-				delete star;
-				st = stars.begin();
+				
+				if (!stars.empty())
+				{
+					stars.erase(stars.begin());
+					delete star;
+					st = stars.begin();
+				}
 			}
 
 			if (detectCollisions(load->getPart(), star->getPart()))
 			{
 				load->changeHealth(-10);
 				pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
-				stars.erase(stars.begin());
-				delete star;
-				st = stars.begin();
+				
+				
+				if (!stars.empty())
+				{
+					stars.erase(stars.begin());
+					delete star;
+					st = stars.begin();
+				}
 			}
 
 			if (!stars.empty())
-				st++;
+				++st;
 		}
 	}
 
@@ -426,7 +433,7 @@ void collisionSystem()
 			}
 
 			if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				pl++;
+				++pl;
 		}
 	}
 
@@ -441,9 +448,7 @@ void collisionSystem()
 
 			if (detectCollisions(falcon->getParticle(), sh->getSpring()->getOther()))
 			{
-				std::cout << falcon->getHealth() << endl;
 				falcon->changeHealth(-10);
-				std::cout << falcon->getHealth() << endl;
 
 				ParticleContact* cont = new ParticleContact();
 
@@ -636,7 +641,7 @@ void collisionSystem()
 			}
 
 			if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				ast++;
+				++ast;
 		}
 	}
 
@@ -658,19 +663,25 @@ void collisionSystem()
 				{
 					if (detectCollisions(shot, star->getPart()))
 					{
-						municion.erase(municion.begin());
-						delete shot;
-						shoot = municion.begin();
+						if (!municion.empty())
+						{
+							municion.erase(shoot);
+							delete shot;
+							shoot = municion.begin();
+						}
 
 						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
 
-						stars.erase(stars.begin());
-						delete star;
-						st = stars.begin();
+						if (!stars.empty())
+						{
+							stars.erase(st);
+							delete star;
+							st = stars.begin();
+						}
 					}
 
 					if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-						st++;
+						++st;
 				}
 			}
 
@@ -686,47 +697,65 @@ void collisionSystem()
 					if (detectCollisions(shot, sh->getSpring()->getOther()))
 					{
 
-						municion.erase(municion.begin());
-						delete shot;
-						shoot = municion.begin();
+						if (!municion.empty())
+						{
+							municion.erase(shoot);
+							delete shot;
+							shoot = municion.begin();
+						}
 
 						fuel.push_back(new FuelBox(sh->getSpring()->getOther()->getRadio(), sh->getSpring()->getOther()->getPosition()));
 
-						ships.erase(ships.begin());
-						delete sh;
-						ast = ships.begin();
+						if (!ships.empty())
+						{
+							ships.erase(ast);
+							delete sh;
+							ast = ships.begin();
+						}
 					}
 
 					if (detectCollisions(shot, sh->get1()))
 					{
-						municion.erase(municion.begin());
-						delete shot;
-						shoot = municion.begin();
+						if (!municion.empty())
+						{
+							municion.erase(shoot);
+							delete shot;
+							shoot = municion.begin();
+						}
 					}
 
 					if (detectCollisions(shot, sh->get2()))
 					{
-						municion.erase(municion.begin());
-						delete shot;
-						shoot = municion.begin();
+						if (!municion.empty())
+						{
+							municion.erase(shoot);
+							delete shot;
+							shoot = municion.begin();
+						}
 					}
 
 					if (detectCollisions(shot, sh->get3()))
 					{
-						municion.erase(municion.begin());
-						delete shot;
-						shoot = municion.begin();
+						if (!municion.empty())
+						{
+							municion.erase(shoot);
+							delete shot;
+							shoot = municion.begin();
+						}
 					}
 
 					if (detectCollisions(shot, sh->get4()))
 					{
-						municion.erase(municion.begin());
-						delete shot;
-						shoot = municion.begin();
+						if (!municion.empty())
+						{
+							municion.erase(shoot);
+							delete shot;
+							shoot = municion.begin();
+						}
 					}
 
 					if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-						ast++;
+					  ++ast;
 				}
 			}
 
@@ -738,26 +767,32 @@ void collisionSystem()
 				{					
 					if (detectCollisions(shot, pla->getPart()))
 					{
-						municion.erase(municion.begin());
-						delete shot;
-						shoot = municion.begin();
+						if (!municion.empty())
+						{
+							municion.erase(shoot);
+							delete shot;
+							shoot = municion.begin();
+						}
 
 						Ship* s = new Ship(pla->getPart()->getPosition());
-						s->getSpring()->getOther()->setVelocity(RandomVec());
+						s->getSpring()->getOther()->setVelocity(RandomVecPos());
 						ships.push_back(s);
 						
-						planets.erase(planets.begin());
-						delete pla;
-						pl = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl);
+							delete pla;
+							pl = planets.begin();
+						}
 					}
 
 					if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-						pl++;
+						++pl;
 				}
 			}
 
 			if (!municion.empty())
-				shoot++;
+				++shoot;
 		}
 	}	
 
@@ -771,13 +806,16 @@ void collisionSystem()
 			{
 				falcon->changeFuel(fue->getFuel());
 
-				fuel.erase(fuel.begin());
-				delete fue;
-				fu = fuel.begin();
+				if (!fuel.empty())
+				{
+					fuel.erase(fu);
+					delete fue;
+					fu = fuel.begin();
+				}
 			}
 
 			if (!fuel.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				fu++;
+				++fu;
 		}
 	}
 
@@ -800,22 +838,28 @@ void collisionSystem()
 					if (detectCollisions(pla1->getPart(), star->getPart()))
 					{
 						Ship* s = new Ship(pla1->getPart()->getPosition());
-						s->getSpring()->getOther()->setVelocity(RandomVec());
+						s->getSpring()->getOther()->setVelocity(RandomVecPos());
 						ships.push_back(s);
 
 						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
 
-						planets.erase(planets.begin());
-						delete pla1;
-						pl1 = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl1);
+							delete pla1;
+							pl1 = planets.begin();
+						}
 
-						stars.erase(stars.begin());
-						delete star;
-						st = stars.begin();
+						if (!stars.empty())
+						{
+							stars.erase(st);
+							delete star;
+							st = stars.begin();
+						}
 					}
 
 					if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-						st++;
+						++st;
 				}
 			}
 
@@ -831,58 +875,76 @@ void collisionSystem()
 					if (detectCollisions(pla1->getPart(), sh->getSpring()->getOther()))
 					{
 						Ship* s = new Ship(pla1->getPart()->getPosition());
-						s->getSpring()->getOther()->setVelocity(RandomVec());
+						s->getSpring()->getOther()->setVelocity(RandomVecPos());
 						ships.push_back(s);
 
 						fuel.push_back(new FuelBox(sh->getSpring()->getOther()->getRadio(), sh->getSpring()->getOther()->getPosition()));
 
-						planets.erase(planets.begin());
-						delete pla1;
-						pl1 = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl1);
+							delete pla1;
+							pl1 = planets.begin();
+						}
 
-						ships.erase(ships.begin());
-						delete sh;
-						ast = ships.begin();
+						if (!ships.empty())
+						{
+							ships.erase(ast);
+							delete sh;
+							ast = ships.begin();
+						}
 					}
 
 					if (detectCollisions(pla1->getPart(), sh->get1()))
 					{
 						ships.push_back(new Ship(pla1->getPart()->getPosition()));
 
-						planets.erase(planets.begin());
-						delete pla1;
-						pl1 = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl1);
+							delete pla1;
+							pl1 = planets.begin();
+						}
 					}
 
 					if (detectCollisions(pla1->getPart(), sh->get2()))
 					{
 						ships.push_back(new Ship(pla1->getPart()->getPosition()));
 
-						planets.erase(planets.begin());
-						delete pla1;
-						pl1 = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl1);
+							delete pla1;
+							pl1 = planets.begin();
+						}
 					}
 
 					if (detectCollisions(pla1->getPart(), sh->get3()))
 					{
 						ships.push_back(new Ship(pla1->getPart()->getPosition()));
 
-						planets.erase(planets.begin());
-						delete pla1;
-						pl1 = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl1);
+							delete pla1;
+							pl1 = planets.begin();
+						}
 					}
 
 					if (detectCollisions(pla1->getPart(), sh->get4()))
 					{
 						ships.push_back(new Ship(pla1->getPart()->getPosition()));
 
-						planets.erase(planets.begin());
-						delete pla1;
-						pl1 = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl1);
+							delete pla1;
+							pl1 = planets.begin();
+						}
 					}
 
 					if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-						ast++;
+						++ast;
 				}
 			}
 
@@ -895,32 +957,38 @@ void collisionSystem()
 					if (detectCollisions(pla1->getPart(), pla2->getPart()))
 					{
 						Ship* s = new Ship(pla1->getPart()->getPosition());
-						s->getSpring()->getOther()->setVelocity(RandomVec());
+						s->getSpring()->getOther()->setVelocity(RandomVecPos());
 						ships.push_back(s);
 
 						Ship* s1 = new Ship(pla2->getPart()->getPosition());
-						s->getSpring()->getOther()->setVelocity(RandomVec());
+						s->getSpring()->getOther()->setVelocity(RandomVecPos());
 						ships.push_back(s1);
 
-						planets.erase(planets.begin());
-						delete pla1;
-						pl1 = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl1);
+							delete pla1;
+							pl1 = planets.begin();
+						}
 
-						planets.erase(planets.begin());
-						delete pla2;
-						pl2 = planets.begin();
+						if (!planets.empty())
+						{
+							planets.erase(pl2);
+							delete pla2;
+							pl2 = planets.begin();
+						}
 					}
 
 					if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-						pl2++;
+						++pl2;
 				}
 
 				else if (pl1 == pl2)
-					pl2++;
+					++pl2;
 			}
 
 			if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				pl1++;
+				++pl1;
 		}
 	}
 
@@ -946,58 +1014,76 @@ void collisionSystem()
 						fuel.push_back(new FuelBox(sh->getSpring()->getOther()->getRadio(), sh->getSpring()->getOther()->getPosition()));
 						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
 
-						ships.erase(ships.begin());
-						delete sh;
-						ast = ships.begin();
-
-						stars.erase(stars.begin());
-						delete star;
-						st = stars.begin();
+						if (!ships.empty())
+						{
+							ships.erase(ast1);
+							delete sh;
+							ast1 = ships.begin();
+						}
+						
+						if (!stars.empty())
+						{
+							stars.erase(st);
+							delete star;
+							st = stars.begin();
+						}
 					}
 
 					if (detectCollisions(star->getPart(), sh->get1()))
 					{
 						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
 
-						stars.erase(stars.begin());
-						delete star;
-						st = stars.begin();
+						if (!stars.empty())
+						{
+							stars.erase(st);
+							delete star;
+							st = stars.begin();
+						}
 					}
 
 					if (detectCollisions(star->getPart(), sh->get2()))
 					{
 						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
 
-						stars.erase(stars.begin());
-						delete star;
-						st = stars.begin();
+						if (!stars.empty())
+						{
+							stars.erase(st);
+							delete star;
+							st = stars.begin();
+						}
 					}
 
 					if (detectCollisions(star->getPart(), sh->get3()))
 					{
 						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
 
-						stars.erase(stars.begin());
-						delete star;
-						st = stars.begin();
+						if (!stars.empty())
+						{
+							stars.erase(st);
+							delete star;
+							st = stars.begin();
+						}
 					}
 
 					if (detectCollisions(star->getPart(), sh->get4()))
 					{
 						pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
 
-						stars.erase(stars.begin());
-						delete star;
-						st = stars.begin();
+						if (!stars.empty())
+						{
+							stars.erase(st);
+							delete star;
+							st = stars.begin();
+						}
 					}
 
 					if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-						st++;
+						++st;
 				}
 			}
 
 			if (!ships.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-				ast1++;
+				++ast1;
 		}
 	}
 }
@@ -1020,13 +1106,13 @@ void stepPhysics(bool interactive, double t)
 				px->update(t);
 
 				if (px->getPart()->deathTime(t)) {
-					pxGens.erase(pxGens.begin());
+					pxGens.erase(gens);
 					delete px;
 					gens = pxGens.begin();
 				}
 
 				else if (!pxGens.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-					gens++;
+					++gens;
 			}
 		}
 
@@ -1036,19 +1122,17 @@ void stepPhysics(bool interactive, double t)
 
 			if (star != nullptr)
 			{
-				star->update(t);
-
-				if (star->getPart()->deathTime(t)) {
+				if (star->getPart() != nullptr && star->getPart()->deathTime(t)) {
 
 					pxGens.push_back(new PxGenerator(star->getPart()->getPosition(), gScene, gPhysics));
 
-					stars.erase(stars.begin());
+					stars.erase(st);
 					delete star;
 					st = stars.begin();
 				}
 
 				else if (!stars.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-					st++;
+					++st;
 			}
 		}
 
@@ -1058,14 +1142,12 @@ void stepPhysics(bool interactive, double t)
 
 			if (planet != nullptr)
 			{
+				planet->update(t);
 
 				planet->getAttach()->PxUpdateForce(falcon, t);
-				//planet->update(t);
-
-				//Estos no se destruyen por tiempo
 
 				if (!planets.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-					pla++;
+					++pla;
 			}
 		}
 
@@ -1078,13 +1160,13 @@ void stepPhysics(bool interactive, double t)
 				p->update(t);
 
 				if (p->deathTime(t)) {
-					municion.erase(municion.begin());
+					municion.erase(it);
 					delete p;
 					it = municion.begin();
 				}
 
 				else if (!municion.empty()) //si no esta vacio (se ha borrado el ultimo) avanza el iterador
-					it++;
+					++it;
 			}
 		}
 
@@ -1099,7 +1181,7 @@ void stepPhysics(bool interactive, double t)
 		if (playing)
 			updateConsole();
 
-		movingCamera->setGlobalPose(PxTransform(falcon->getParticle()->getDin()->getGlobalPose().p.x - 50, falcon->getParticle()->getDin()->getGlobalPose().p.y + 10, falcon->getParticle()->getDin()->getGlobalPose().p.z));
+		movingCamera->setGlobalPose(PxTransform(falcon->getParticle()->getDin()->getGlobalPose().p.x - zoom, falcon->getParticle()->getDin()->getGlobalPose().p.y + 10, falcon->getParticle()->getDin()->getGlobalPose().p.z));
 		//GetCamera()->setDir(falcon->getParticle()->getDin()->getLinearVelocity());
 		GetCamera()->setEye(movingCamera->getGlobalPose().p);
 
@@ -1111,23 +1193,22 @@ void stepPhysics(bool interactive, double t)
 	}
 	else 
 	{
-	if (win)
-	{ 
-		Vector3 v = victory->getPosition();
-		v.x = v.x - 50;
-		GetCamera()->setEye(v);
+		if (win)
+		{ 
+			if (victory != nullptr && victory->update(t)) {
+				victory = nullptr;
+			}
 
-
-		system("CLS");
-		std::cout << "sos un genio" << std::endl;
-		deleteStuff();
-	}
-	else
-	{
-		system("CLS");
-		std::cout << "sos malisimo hermano" << std::endl;
-		deleteStuff();
-	}
+			system("CLS");
+			std::cout << "sos un genio" << std::endl;
+			deleteStuff();
+		}
+		else
+		{
+			system("CLS");
+			std::cout << "sos malisimo hermano" << std::endl;
+			deleteStuff();
+		}
 	}
 	/////////////////////////////////////////////////////////////////////////
 }
@@ -1180,13 +1261,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 		break;
 	}
-	case 'I':
+	case 'E':
 	{
 		falcon->handleEvent(key);
 
 		break;
 	}
-	case 'K':
+	case 'Q':
 	{
 		falcon->handleEvent(key);
 
@@ -1207,43 +1288,81 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 			municion.push_back(p1);
 
-			std::cout << "eee" << std::endl;
 			services_.getAudios()->playChannel(Resources::Laser, 0);
 
 		}
 		break;
-	}//*/
+	}
 
 	////////////////////////////////////////////////////////////
+	//Camara
 
-	case 'Q':
+	case 'J':
 	{
 		if (c.z > -1.0f)
 		{
 			c.z = c.z - 0.01;
-			cout << c.z << endl;
 		}
 		GetCamera()->setDir(c);
 
 		break;
 	}
-	case 'E':
+	case 'L':
 	{
 		if (c.z < 1.0f)
 		{
 			c.z = c.z + 0.01;
-			cout << c.z << endl;
+		}
+		GetCamera()->setDir(c);
+
+		break;
+	}
+	case 'K':
+	{
+		if (c.y > -1.0f)
+		{
+			c.y = c.y - 0.01;
+		}
+		GetCamera()->setDir(c);
+
+		break;
+	}
+	case 'I':
+	{
+		if (c.y < 1.0f)
+		{
+			c.y = c.y + 0.01;
 		}
 		GetCamera()->setDir(c);
 
 		break;
 	}
 
-	case 'R':
+	case 'U':
+	{
+		if (zoom < 100)
+		{
+			zoom++;
+		}
+
+		break;
+	}
+	case 'O':
+	{
+		if (zoom > -50)
+		{
+			zoom--;
+		}
+
+		break;
+	}
+
+	case 'M':
 	{
 		c.z = 0;
 		c.x = 1;
 		c.y = 0;
+		zoom = 50;
 
 		GetCamera()->setDir(c);
 
@@ -1251,41 +1370,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 
 	////////////////////////////////////////////////////////////
-	/*case 'D':
-	{
-		if (c.z < 1.0f)
-		{
-			c.z = c.z + 0.1f;
-			cout << c.z << endl;
-		}
-		GetCamera()->setDir(c);
-
-		break;
-	}
-	case 'A':
-	{
-		if (c.z > -1.0f)
-		{
-			c.z = c.z - 0.1f;
-			cout << c.z << endl;
-		}
-		GetCamera()->setDir(c);
-
-		break;
-	}*/
+	
 	////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////////////////////////
-
-
-	case '+':
-	{
-		break;
-	}
-	case '-':
-	{
-		break;
-	}
 	default:
 		break;
 	}
@@ -1320,13 +1408,16 @@ int main(int, const char* const*)
 	initResources();
 	char a = ' ';
 	
-	while (a != 'y')
+	std::cout << "Hola, joven piloto." << "\n" "Bienvenid@ al simulador de vuelo del modelo." << "\n" "Tu objetivo es transportar la carga al planeta marcado sin daños." << "\n" "En tu camino habrá asteroides, estrellas moribundas y planetas" << "\n" "Por suerte cuentas con disparos láser y tu destreza de pilotaje." << "\n" << "Los controles son los siguientes:" << "\n" << "- Control de la direccion con WASD" << "\n" << "- Control de la altura con QE" << "\n" << "- Control de la camara con IJKL" << "\n" << "- Control del zoom con UO" << "\n" << "Dispara con W" << "\n" << "Mira la consola para informacion importante" << "\n" << "\n" << "Introduce el codigo 'Y' para comenzar" << "\n";
+
+	while (toupper(a) != 'Y')
+	{
 		std:cin >> a;
 
-	if (a == 'y')
-		playing = true;
+		if (toupper(a) == 'Y')
+			playing = true;
+	}
 
-	{
 #ifndef OFFLINE_EXECUTION 
 		extern void renderLoop();
 		renderLoop();
@@ -1337,9 +1428,6 @@ int main(int, const char* const*)
 			stepPhysics(false);
 		cleanupPhysics(false);
 #endif
-	}
-
-	//Console
 
 	services_.~ServiceLocator();
 	audio_.~SDLAudioManager();
